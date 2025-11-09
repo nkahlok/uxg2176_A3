@@ -4,12 +4,14 @@ public class DroneMovement : MonoBehaviour
 {
     GameInput gameInput;
     Rigidbody rb;
-    [SerializeField] Vector3 movementForce = Vector3.zero;
+
     [SerializeField] float maxHorizontalSpeed = 20f;
     [SerializeField] float maxVerticalSpeed = 10f;
-    [SerializeField] float rotationSpeed = 10f;
+    [SerializeField] float smoothTime = 0.3f;
+    Vector3 currVelocity;
+    Vector3 smoothedVelocity;
 
-    [SerializeField] Transform camTransform;
+    [SerializeField] DroneCamera droneCamera;
 
     private void Start()
     {
@@ -31,29 +33,23 @@ public class DroneMovement : MonoBehaviour
         // get player input
         Vector3 input = gameInput.GetMovementVector();
 
-        // add appropriate force in the direction of player input
-        if (input != Vector3.zero)
-        {
-            // calculates force to add
-            Vector3 force = new Vector3 (movementForce.x * input.x, movementForce.y * input.y, movementForce.z * input.z);
-            rb.AddForce(force);
+        // get cam vectors and flatten
+        Vector3 camForward = droneCamera.transform.forward;
+        Vector3 camRight = droneCamera.transform.right;
+        camForward.y = 0f;
+        camRight.y = 0f;
+        camForward.Normalize();
+        camRight.Normalize();
 
-            // clamps horizontal and vertical speeds
-            Vector3 velocity = rb.linearVelocity;
-            Vector2 horizontal = new Vector2(velocity.x, velocity.z);
-            if (horizontal.magnitude > maxHorizontalSpeed)
-            {
-                horizontal = horizontal.normalized * maxHorizontalSpeed;
-                velocity.x = horizontal.x;
-                velocity.z = horizontal.y;
-            }
-            float vertical = velocity.y;
-            if (vertical > maxVerticalSpeed)
-            {
-                vertical = maxVerticalSpeed;
-                velocity.y = vertical;
-            }
-            rb.linearVelocity = velocity;
-        }
+        Vector3 moveDir = camForward * input.z + camRight * input.x;
+        moveDir.Normalize();
+
+        // calculate target velocity
+        Vector3 targetVelocity = moveDir * maxHorizontalSpeed;
+        targetVelocity.y = input.y * maxVerticalSpeed;
+
+        // smooth damp curr velocity
+        currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
+        rb.linearVelocity = currVelocity;
     }
 }
