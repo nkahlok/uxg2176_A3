@@ -4,11 +4,13 @@ using UnityEngine.Windows;
 public class DroneMovement : MonoBehaviour
 {
     GameInput gameInput;
-    Rigidbody rb;
 
     [SerializeField] float maxHorizontalSpeed = 20f;
     [SerializeField] float maxVerticalSpeed = 10f;
     [SerializeField] float smoothTime = 0.3f;
+    [SerializeField] float sphereCastRadius = 0.5f;
+    [SerializeField] float minDistFromObstacles = 1f;
+    [SerializeField] float minHeightFromGround = 0.3f;
     Vector3 currVelocity;
     Vector3 smoothedVelocity;
 
@@ -18,10 +20,11 @@ public class DroneMovement : MonoBehaviour
     Quaternion currRotation;
     Quaternion smoothedRotation;
 
+    [SerializeField] bool debugCasts = false;
+
     private void Start()
     {
         gameInput = GetComponent<GameInput>();
-        rb = GetComponent<Rigidbody>();
         Player.Instance.SwitchMode(Player.PlayerState.DRONE);
 
         currRotation = transform.rotation;
@@ -58,7 +61,64 @@ public class DroneMovement : MonoBehaviour
 
         // smooth damp curr velocity
         currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
+
+        // prevent drone from flying through the floor
+        //RaycastHit hit;
+        //if (Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, minHeightFromGround, LayerMask.GetMask("Default")))
+        //{
+        //    if (currVelocity.y < 0f)
+        //    {
+        //        currVelocity = new Vector3(currVelocity.x, 0f, currVelocity.z);
+        //    }
+        //}
+
+        //if (Physics.SphereCast(transform.position, sphereCastRadius, moveDir, out hit, minDistFromObstacles, LayerMask.GetMask("Default")) || Physics.SphereCast(transform.position, sphereCastRadius, currVelocity, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
+        //{
+        //    currVelocity = Vector3.zero;
+        //}
+
+        // update position with calculated velocity
         transform.position += currVelocity * Time.deltaTime;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (debugCasts)
+        {
+            Vector3 input = gameInput.GetMovementVector();
+            Vector3 camForward = droneCamera.transform.forward;
+            Vector3 camRight = droneCamera.transform.right;
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
+
+            Vector3 moveDir = camForward * input.z + camRight * input.x;
+            moveDir.Normalize();
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, sphereCastRadius);
+
+            RaycastHit hit;
+            if (Physics.SphereCast(transform.position, sphereCastRadius, moveDir, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, hit.point);
+                Gizmos.DrawSphere(hit.point, sphereCastRadius);
+            }
+            else if (Physics.SphereCast(transform.position, sphereCastRadius, currVelocity, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(transform.position, hit.point);
+                Gizmos.DrawSphere(hit.point, sphereCastRadius);
+            }
+            else
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(transform.position, transform.position + moveDir * minDistFromObstacles);
+                Gizmos.DrawWireSphere(transform.position + moveDir * minDistFromObstacles, sphereCastRadius);
+            }
+        }
     }
 
     private void HandleRotationNew()
