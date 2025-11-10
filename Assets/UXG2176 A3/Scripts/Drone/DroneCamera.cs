@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class DroneCamera : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class DroneCamera : MonoBehaviour
         currPitch = angles.x;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (Player.Instance.playerState == Player.PlayerState.DRONE)
         {
@@ -45,33 +46,28 @@ public class DroneCamera : MonoBehaviour
                 return;
             }
 
-            HandleDroneRotation();
             HandleCameraPosition();
         }
     }
 
-    private void HandleDroneRotation()
+    private void HandleCameraPosition()
     {
+        // mouse input
         Vector2 input = gameInput.GetMouseVector().normalized;
         input.x *= horizMouseSens;
         input.y *= vertMouseSens;
 
         // yaw = horizontal rotation around y axis
-        // pitch = vertical rotation around x axis
+        // smooth rotation
         float targetYaw = currYaw + input.x;
+        currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime);
+
+        // pitch = vertical rotation around x axis
+        // smooth pitch
         float targetPitch = currPitch - input.y; // invert for more intuitive feel
         targetPitch = Mathf.Clamp(targetPitch, vertMinAngle, vertMaxAngle);
-
-        // smooth rotation
-        currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime);
         currPitch = Mathf.SmoothDampAngle(currPitch, targetPitch, ref pitchVelocity, rotationSmoothTime);
 
-        // apply yaw to drone rotation
-        droneTransform.rotation = Quaternion.Euler(0f, currYaw, 0f);
-    }
-
-    private void HandleCameraPosition()
-    {
         // calculate cam pos based on drone rotation, cam height and distance offset
         Quaternion rotation = Quaternion.Euler(currPitch, currYaw, 0f);
         Vector3 offset = rotation * new Vector3(0f, height, -distance);
@@ -84,5 +80,6 @@ public class DroneCamera : MonoBehaviour
         // ensures camera is always facing drone
         transform.LookAt(droneTransform.position);
         droneCamera.transform.LookAt(droneTransform.position);
+        droneTransform.rotation = Quaternion.Euler(0f, currYaw, 0f);
     }
 }
