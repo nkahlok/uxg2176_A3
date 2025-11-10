@@ -61,6 +61,30 @@ public class DroneMovement : MonoBehaviour
         transform.position += currVelocity * Time.deltaTime;
     }
 
+    private void HandleRotationNew()
+    {
+        Vector3 input = gameInput.GetMovementVector();
+        if (input.x > 0f)
+        {
+
+        }
+        else if (input.x < 0f)
+        {
+
+        }
+
+        if (input.z > 0f)
+        {
+
+        }
+        else if (input.z < 0f)
+        {
+
+        }
+        
+        //float x = Mathf.SmoothDampAngle()
+    }
+
     private void HandleRotation()
     {
         // get flattened cam vectors and normalise
