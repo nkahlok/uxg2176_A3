@@ -850,7 +850,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance: 8
   height: 2
-  horizMouseSens: 10
+  horizMouseSens: 12
   vertMouseSens: 5
   vertMinAngle: -40
   vertMaxAngle: 80
@@ -1973,11 +1973,13 @@ MonoBehaviour:
   maxHorizontalSpeed: 10
   maxVerticalSpeed: 5
   smoothTime: 0.3
-  minDistFromObstacles: 1
+  sphereCastRadius: 0.5
+  minDistFromObstacles: 0.6
   minHeightFromGround: 0.15
   droneCamera: {fileID: 1382328130}
   maxTiltAngle: 15
   tiltSmoothTime: 0.3
+  debugCasts: 0
 --- !u!114 &2052426741
 MonoBehaviour:
   m_ObjectHideFlags: 0
