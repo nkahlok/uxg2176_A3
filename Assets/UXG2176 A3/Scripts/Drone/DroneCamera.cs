@@ -1,10 +1,9 @@
 using UnityEngine;
-using UnityEngine.Windows;
 
 public class DroneCamera : MonoBehaviour
 {
-    Camera droneCamera;
-    Transform droneTransform;
+    Camera cam;
+    Transform parentTransform;
     GameInput gameInput;
 
     [SerializeField] float distance = 8f;
@@ -25,13 +24,14 @@ public class DroneCamera : MonoBehaviour
 
     private void Start()
     {
-        droneCamera = Camera.main;
-        droneTransform = transform.parent;
-        gameInput = droneTransform.GetComponent<GameInput>();
+        cam = GetComponent<Camera>();
+
+        parentTransform = transform.parent;
+        gameInput = parentTransform.GetComponent<GameInput>();
 
         // position cam at offset
         transform.position += new Vector3(0f, height, -distance);
-        transform.LookAt(droneTransform.position);
+        transform.LookAt(parentTransform.position);
 
         // init yaw and pitch
         Vector3 angles = transform.eulerAngles;
@@ -44,8 +44,8 @@ public class DroneCamera : MonoBehaviour
     {
         if (Player.Instance.playerState == Player.PlayerState.DRONE)
         {
-            // return if no drone
-            if (droneTransform == null)
+            // return if no parent
+            if (parentTransform == null)
             {
                 return;
             }
@@ -54,7 +54,7 @@ public class DroneCamera : MonoBehaviour
         }
     }
 
-    private void HandleCameraPosition()
+    protected void HandleCameraPosition()
     {
         // mouse input
         Vector2 input = gameInput.GetMouseVector().normalized;
@@ -74,15 +74,15 @@ public class DroneCamera : MonoBehaviour
         // calculate cam pos based on drone rotation, cam height and distance offset
         Quaternion rotation = Quaternion.Euler(currPitch, currYaw, 0f);
         Vector3 offset = rotation * new Vector3(0f, height, -distance);
-        Vector3 targetPos = droneTransform.position + offset;
+        Vector3 targetPos = parentTransform.position + offset;
 
         // smooth position movement
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref positionVelocity, positionSmoothTime);
-        droneCamera.transform.position = transform.position;
+        cam.transform.position = transform.position;
 
         // ensures camera is always facing drone
-        transform.LookAt(droneTransform.position);
-        droneCamera.transform.LookAt(droneTransform.position);
+        transform.LookAt(parentTransform.position);
+        cam.transform.LookAt(parentTransform.position);
     }
 
     public float CalcCurrYaw()
