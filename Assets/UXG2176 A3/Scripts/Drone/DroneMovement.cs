@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.Windows;
 
 public class DroneMovement : MonoBehaviour
 {
     GameInput gameInput;
 
+    Rigidbody rb;
     [SerializeField] float maxHorizontalSpeed = 20f;
     [SerializeField] float maxVerticalSpeed = 10f;
     [SerializeField] float smoothTime = 0.3f;
@@ -17,7 +17,6 @@ public class DroneMovement : MonoBehaviour
     [SerializeField] DroneCamera droneCamera;
     [SerializeField] float maxTiltAngle = 15f;
     [SerializeField] float tiltSmoothTime = 0.3f;
-    Quaternion currRotation;
     Quaternion smoothedRotation;
 
     [SerializeField] bool debugCasts = false;
@@ -25,9 +24,8 @@ public class DroneMovement : MonoBehaviour
     private void Start()
     {
         gameInput = GetComponent<GameInput>();
+        rb = GetComponent<Rigidbody>();
         Player.Instance.SwitchMode(Player.PlayerState.DRONE);
-
-        currRotation = transform.rotation;
     }
 
     private void Update()
@@ -35,7 +33,7 @@ public class DroneMovement : MonoBehaviour
         if (Player.Instance.playerState == Player.PlayerState.DRONE)
         {
             HandleMovement();
-            //HandleRotation();
+            HandleRotation();
         }
     }
 
@@ -62,129 +60,43 @@ public class DroneMovement : MonoBehaviour
         // smooth damp curr velocity
         currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
 
-        // prevent drone from flying through the floor
-        //RaycastHit hit;
-        //if (Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, minHeightFromGround, LayerMask.GetMask("Default")))
-        //{
-        //    if (currVelocity.y < 0f)
-        //    {
-        //        currVelocity = new Vector3(currVelocity.x, 0f, currVelocity.z);
-        //    }
-        //}
-
-        //if (Physics.SphereCast(transform.position, sphereCastRadius, moveDir, out hit, minDistFromObstacles, LayerMask.GetMask("Default")) || Physics.SphereCast(transform.position, sphereCastRadius, currVelocity, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
-        //{
-        //    currVelocity = Vector3.zero;
-        //}
-
         // update position with calculated velocity
-        transform.position += currVelocity * Time.deltaTime;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (debugCasts)
-        {
-            Vector3 input = gameInput.GetMovementVector();
-            Vector3 camForward = droneCamera.transform.forward;
-            Vector3 camRight = droneCamera.transform.right;
-            camForward.y = 0f;
-            camRight.y = 0f;
-            camForward.Normalize();
-            camRight.Normalize();
-
-            Vector3 moveDir = camForward * input.z + camRight * input.x;
-            moveDir.Normalize();
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, sphereCastRadius);
-
-            RaycastHit hit;
-            if (Physics.SphereCast(transform.position, sphereCastRadius, moveDir, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawLine(transform.position, hit.point);
-                Gizmos.DrawSphere(hit.point, sphereCastRadius);
-            }
-            else if (Physics.SphereCast(transform.position, sphereCastRadius, currVelocity, out hit, minDistFromObstacles, LayerMask.GetMask("Default")))
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(transform.position, hit.point);
-                Gizmos.DrawSphere(hit.point, sphereCastRadius);
-            }
-            else
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawLine(transform.position, transform.position + moveDir * minDistFromObstacles);
-                Gizmos.DrawWireSphere(transform.position + moveDir * minDistFromObstacles, sphereCastRadius);
-            }
-        }
-    }
-
-    private void HandleRotationNew()
-    {
-        Vector3 input = gameInput.GetMovementVector();
-        if (input.x > 0f)
-        {
-
-        }
-        else if (input.x < 0f)
-        {
-
-        }
-
-        if (input.z > 0f)
-        {
-
-        }
-        else if (input.z < 0f)
-        {
-
-        }
-        
-        //float x = Mathf.SmoothDampAngle()
+        rb.linearVelocity = currVelocity;
     }
 
     private void HandleRotation()
     {
-        // get flattened cam vectors and normalise
-        Vector3 camForward = droneCamera.transform.forward;
-        camForward.y = 0f;
-        camForward.Normalize();
+        Vector3 input = gameInput.GetMovementVector();
+        Vector3 eulerAngles = transform.GetChild(0).eulerAngles;
+        float x = 0f;
+        float z = 0f;
 
-        Vector3 horizontalVelocity = new Vector3(currVelocity.x, 0f, currVelocity.z);
-        Quaternion yawRotation = Quaternion.LookRotation(camForward);
-
-        float tiltX = 0f;
-        float tiltZ = 0f;
-
-        if (horizontalVelocity.magnitude > 0f)
+        if (input.x > 0f)
         {
-            Vector3 localVelocity = Quaternion.Inverse(yawRotation) * horizontalVelocity;
-
-            // calc tilt based on local velocity
-            tiltX = -Mathf.Clamp(localVelocity.z / maxHorizontalSpeed, -1f, 1f) * maxTiltAngle;
-            tiltZ = -Mathf.Clamp(localVelocity.x / maxHorizontalSpeed, -1f, 1f) * maxTiltAngle;
+            z = Mathf.SmoothDampAngle(eulerAngles.z, -maxTiltAngle, ref smoothedRotation.z, tiltSmoothTime);
+        }
+        else if (input.x < 0f)
+        {
+            z = Mathf.SmoothDampAngle(eulerAngles.z, maxTiltAngle, ref smoothedRotation.z, tiltSmoothTime);
+        }
+        else
+        {
+            z = Mathf.SmoothDampAngle(eulerAngles.z, 0f, ref smoothedRotation.z, tiltSmoothTime);
         }
 
-        Quaternion tiltRotation = Quaternion.Euler(tiltX, 0f, tiltZ);
-        Quaternion targetRotation = yawRotation * tiltRotation;
+        if (input.z > 0f)
+        {
+            x = Mathf.SmoothDampAngle(eulerAngles.x, maxTiltAngle, ref smoothedRotation.x, tiltSmoothTime);
+        }
+        else if (input.z < 0f)
+        {
+            x = Mathf.SmoothDampAngle(eulerAngles.x, -maxTiltAngle, ref smoothedRotation.x, tiltSmoothTime);
+        }
+        else
+        {
+            x = Mathf.SmoothDampAngle(eulerAngles.x, 0f, ref smoothedRotation.x, tiltSmoothTime);
+        }
 
-        //currRotation = SmoothDampQuaternion(currRotation, targetRotation, ref smoothedRotation, tiltSmoothTime);
-        //transform.rotation = currRotation;
-    }
-
-    private Quaternion SmoothDampQuaternion(Quaternion curr, Quaternion target, ref Quaternion velocity, float smoothTime)
-    {
-        Vector3 currEuler = curr.eulerAngles;
-        Vector3 targetEuler = target.eulerAngles;
-        Vector3 velocityEuler = velocity.eulerAngles;
-
-        float x = Mathf.SmoothDampAngle(currEuler.x, targetEuler.x, ref velocityEuler.x, smoothTime);
-        float y = Mathf.SmoothDampAngle(currEuler.y, targetEuler.y, ref velocityEuler.y, smoothTime);
-        float z = Mathf.SmoothDampAngle(currEuler.z, targetEuler.z, ref velocityEuler.z, smoothTime);
-
-        velocity = new Quaternion(velocityEuler.x, velocityEuler.y, velocityEuler.z, 0f);
-        return Quaternion.Euler(x, y, z);
+        transform.GetChild(0).rotation = Quaternion.Euler(x, droneCamera.CalcCurrYaw(), z);
     }
 }

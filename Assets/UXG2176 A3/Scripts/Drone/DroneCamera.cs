@@ -10,8 +10,6 @@ public class DroneCamera : MonoBehaviour
     [SerializeField] float distance = 8f;
     [SerializeField] float height = 2f;
 
-    [SerializeField] float horizMouseSens = 3f;
-    [SerializeField] float vertMouseSens = 3f;
     [SerializeField] float vertMinAngle = -40f;
     [SerializeField] float vertMaxAngle = 80f;
 
@@ -20,6 +18,7 @@ public class DroneCamera : MonoBehaviour
 
     float currYaw = 0f;
     float currPitch = 0f;
+    float pitchOffset = 0f;
     float yawVelocity = 0f;
     float pitchVelocity = 0f;
     Vector3 positionVelocity = Vector3.zero;
@@ -30,10 +29,15 @@ public class DroneCamera : MonoBehaviour
         droneTransform = transform.parent;
         gameInput = droneTransform.GetComponent<GameInput>();
 
+        // position cam at offset
+        transform.position += new Vector3(0f, height, -distance);
+        transform.LookAt(droneTransform.position);
+
         // init yaw and pitch
         Vector3 angles = transform.eulerAngles;
         currYaw = angles.y;
         currPitch = angles.x;
+        pitchOffset = currPitch;
     }
 
     private void LateUpdate()
@@ -54,18 +58,17 @@ public class DroneCamera : MonoBehaviour
     {
         // mouse input
         Vector2 input = gameInput.GetMouseVector().normalized;
-        input.x *= horizMouseSens;
-        input.y *= vertMouseSens;
+        Vector2 sens = gameInput.GetMouseSens();
+        input.y *= sens.y;
 
         // yaw = horizontal rotation around y axis
         // smooth rotation
-        float targetYaw = currYaw + input.x;
-        currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime);
+        CalcCurrYaw();
 
         // pitch = vertical rotation around x axis
         // smooth pitch
         float targetPitch = currPitch - input.y; // invert for more intuitive feel
-        targetPitch = Mathf.Clamp(targetPitch, vertMinAngle, vertMaxAngle);
+        targetPitch = Mathf.Clamp(targetPitch, vertMinAngle - pitchOffset, vertMaxAngle - pitchOffset);
         currPitch = Mathf.SmoothDampAngle(currPitch, targetPitch, ref pitchVelocity, rotationSmoothTime);
 
         // calculate cam pos based on drone rotation, cam height and distance offset
@@ -80,6 +83,20 @@ public class DroneCamera : MonoBehaviour
         // ensures camera is always facing drone
         transform.LookAt(droneTransform.position);
         droneCamera.transform.LookAt(droneTransform.position);
-        droneTransform.rotation = Quaternion.Euler(0f, currYaw, 0f);
+    }
+
+    public float CalcCurrYaw()
+    {
+        // mouse input
+        Vector2 input = gameInput.GetMouseVector().normalized;
+        Vector2 sens = gameInput.GetMouseSens();
+        input.x *= sens.x;
+
+        // yaw = horizontal rotation around y axis
+        // smooth rotation
+        float targetYaw = currYaw + input.x;
+        currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime);
+
+        return currYaw;
     }
 }

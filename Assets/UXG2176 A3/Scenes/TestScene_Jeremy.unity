@@ -519,6 +519,7 @@ GameObject:
   - component: {fileID: 699552414}
   - component: {fileID: 699552413}
   - component: {fileID: 699552412}
+  - component: {fileID: 699552415}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -555,8 +556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf6a53c3c58ae244b84fc768bf52077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doLockCursor: 1
   playerState: 0
+  doLockCursor: 1
 --- !u!114 &699552413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,6 +597,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &699552415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699552408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18046c0407ef2c24b9d7e09420e3626b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0
+  smoothTime: 0
 --- !u!1 &868503247
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,7 +845,7 @@ Transform:
   m_GameObject: {fileID: 1382328128}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -850,8 +865,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance: 8
   height: 2
-  horizMouseSens: 12
-  vertMouseSens: 5
   vertMinAngle: -40
   vertMaxAngle: 80
   rotationSmoothTime: 0.1
@@ -1977,7 +1990,7 @@ MonoBehaviour:
   minDistFromObstacles: 0.6
   minHeightFromGround: 0.15
   droneCamera: {fileID: 1382328130}
-  maxTiltAngle: 15
+  maxTiltAngle: 25
   tiltSmoothTime: 0.3
   debugCasts: 0
 --- !u!114 &2052426741
@@ -2051,8 +2064,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2052426739}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2071246842
-BoxCollider:
+--- !u!135 &2071246842
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2070,7 +2083,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 0.4, z: 1}
+  m_Radius: 0.6
   m_Center: {x: 0, y: 0.025, z: 0}
 --- !u!1 &2103306184
 GameObject:

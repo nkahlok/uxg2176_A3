@@ -5,13 +5,20 @@ public class GameInput : MonoBehaviour
 {
     InputSystem_Actions inputActions;
 
+    static float horizMouseSens = 8f;
+    static float vertMouseSens = 7f;
+
     private void OnEnable()
     {
         inputActions = new InputSystem_Actions();
 
         // enable all input action maps and their respective actions
         inputActions.Player.Enable();
+        inputActions.Player.Interact.performed += PlayerInteract_performed;
+
         inputActions.Drone.Enable();
+        inputActions.Drone.Attack.performed += DroneAttack_performed;
+        inputActions.Drone.Attack.canceled += DroneAttack_canceled;
 
         // disable all maps except for player
         //inputActions.Drone.Disable();
@@ -85,5 +92,25 @@ public class GameInput : MonoBehaviour
             default:
                 return Vector3.zero;
         }
+    }
+
+    public Vector2 GetMouseSens()
+    {
+        return new Vector2 (horizMouseSens, vertMouseSens);
+    }
+
+    private void PlayerInteract_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+
+    }
+
+    private void DroneAttack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+
+    }
+
+    private void DroneAttack_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+
     }
 }
