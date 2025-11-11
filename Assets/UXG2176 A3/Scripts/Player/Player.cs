@@ -5,10 +5,6 @@ public class Player : MonoBehaviour
     public static Player Instance { get; private set; }
     GameInput gameInput;
 
-    [Space(10f)]
-    [Header("DEBUG")]
-    [SerializeField] bool doLockCursor = true;
-
     public enum PlayerState
     {
         PLAYER,
@@ -17,6 +13,10 @@ public class Player : MonoBehaviour
     };
 
     public PlayerState playerState = PlayerState.PLAYER;
+
+    [Space(10f)]
+    [Header("DEBUG")]
+    [SerializeField] bool doLockCursor = true;
 
     private void Awake()
     {
@@ -27,7 +27,6 @@ public class Player : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -35,11 +34,30 @@ public class Player : MonoBehaviour
     {
         gameInput = GetComponent<GameInput>();
 
+        playerState = PlayerState.PLAYER;
+        CameraManager.Instance.SetCameraMode(playerState);
+
         // DEBUG LOCK CURSOR
         if (doLockCursor)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            SwitchMode(PlayerState.PLAYER);
+        }
+        else if (Input.GetKeyUp(KeyCode.Alpha2))
+        {
+            SwitchMode(PlayerState.CAMERA);
+        }
+        else if (Input.GetKeyUp(KeyCode.Alpha3))
+        {
+            SwitchMode(PlayerState.DRONE);
         }
     }
 
@@ -50,5 +68,8 @@ public class Player : MonoBehaviour
         
         // switches input action map based on the player state
         gameInput.SwitchInputMode(playerState);
+
+        // switch camera
+        CameraManager.Instance.SetCameraMode(playerState);
     }
 }
