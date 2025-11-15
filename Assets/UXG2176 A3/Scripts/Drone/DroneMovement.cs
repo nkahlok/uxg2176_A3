@@ -5,21 +5,15 @@ public class DroneMovement : MonoBehaviour
     GameInput gameInput;
 
     Rigidbody rb;
-    [SerializeField] float maxHorizontalSpeed = 20f;
-    [SerializeField] float maxVerticalSpeed = 10f;
+    [SerializeField] float maxHorizontalSpeed = 5f;
+    [SerializeField] float maxVerticalSpeed = 5f;
     [SerializeField] float smoothTime = 0.3f;
-    [SerializeField] float sphereCastRadius = 0.5f;
-    [SerializeField] float minDistFromObstacles = 1f;
-    [SerializeField] float minHeightFromGround = 0.3f;
     Vector3 currVelocity;
     Vector3 smoothedVelocity;
 
-    [SerializeField] ThirdPersonCamera droneCamera;
-    [SerializeField] float maxTiltAngle = 15f;
+    [SerializeField] float maxTiltAngle = 25f;
     [SerializeField] float tiltSmoothTime = 0.3f;
     Quaternion smoothedRotation;
-
-    [SerializeField] bool debugCasts = false;
 
     private void Start()
     {
@@ -29,8 +23,12 @@ public class DroneMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleTilt();
+    }
+
+    private void FixedUpdate()
+    {
         HandleMovement();
-        HandleRotation();
     }
 
     private void HandleMovement()
@@ -41,8 +39,8 @@ public class DroneMovement : MonoBehaviour
             Vector3 input = gameInput.GetMovementVector();
 
             // get flattened cam vectors and normalise
-            Vector3 camForward = droneCamera.transform.forward;
-            Vector3 camRight = droneCamera.transform.right;
+            Vector3 camForward = CameraManager.Instance.GetCameraForward();
+            Vector3 camRight = CameraManager.Instance.GetCameraRight();
             camForward.y = 0f;
             camRight.y = 0f;
             camForward.Normalize();
@@ -58,7 +56,7 @@ public class DroneMovement : MonoBehaviour
             // smooth damp curr velocity
             currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
 
-            // update position with calculated velocity
+            // update drone velocity
             rb.linearVelocity = currVelocity;
         }
         else
@@ -66,13 +64,14 @@ public class DroneMovement : MonoBehaviour
             // smooth damp curr velocity
             currVelocity = Vector3.SmoothDamp(currVelocity, Vector3.zero, ref smoothedVelocity, smoothTime);
 
-            // update position with calculated velocity
+            // update drone velocity
             rb.linearVelocity = currVelocity;
         }
     }
 
-    private void HandleRotation()
+    private void HandleTilt()
     {
+        // get input and curr tilt angles
         Vector3 input = gameInput.GetMovementVector();
         Vector3 eulerAngles = transform.GetChild(0).eulerAngles;
         float x = 0f;
@@ -80,34 +79,41 @@ public class DroneMovement : MonoBehaviour
 
         if (Player.Instance.playerState == Player.PlayerState.DRONE)
         {
+            // tilt drone right (-ve z rotation)
             if (input.x > 0f)
             {
                 z = Mathf.SmoothDampAngle(eulerAngles.z, -maxTiltAngle, ref smoothedRotation.z, tiltSmoothTime);
             }
+            // tilt drone left (+ve z rotation)
             else if (input.x < 0f)
             {
                 z = Mathf.SmoothDampAngle(eulerAngles.z, maxTiltAngle, ref smoothedRotation.z, tiltSmoothTime);
             }
+            // tilt drone to normal
             else
             {
                 z = Mathf.SmoothDampAngle(eulerAngles.z, 0f, ref smoothedRotation.z, tiltSmoothTime);
             }
 
+            // tilt drone forwards (+ve x rotation)
             if (input.z > 0f)
             {
                 x = Mathf.SmoothDampAngle(eulerAngles.x, maxTiltAngle, ref smoothedRotation.x, tiltSmoothTime);
             }
+            // tilt drone backwards (-ve x rotation)
             else if (input.z < 0f)
             {
                 x = Mathf.SmoothDampAngle(eulerAngles.x, -maxTiltAngle, ref smoothedRotation.x, tiltSmoothTime);
             }
+            // tilt drone to normal
             else
             {
                 x = Mathf.SmoothDampAngle(eulerAngles.x, 0f, ref smoothedRotation.x, tiltSmoothTime);
             }
 
-            transform.GetChild(0).rotation = Quaternion.Euler(x, droneCamera.CalcCurrYaw(), z);
+            transform.GetChild(0).rotation = Quaternion.Euler(x, CameraManager.Instance.currYaw, z);
         }
+        // tilt drone to normal
         else
         {
             x = Mathf.SmoothDampAngle(eulerAngles.x, 0f, ref smoothedRotation.x, tiltSmoothTime);

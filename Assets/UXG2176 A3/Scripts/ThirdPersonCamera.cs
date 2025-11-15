@@ -10,11 +10,11 @@ public class ThirdPersonCamera : MonoBehaviour
     [SerializeField] float height = 2f;
 
     [SerializeField] float camColliderRadius = 0.5f;
-    [SerializeField] float vertMinAngle = -40f;
-    [SerializeField] float vertMaxAngle = 80f;
+    [SerializeField] float vertMinAngle = -20f;
+    [SerializeField] float vertMaxAngle = 60f;
 
-    [SerializeField] float rotationSmoothTime = 0.1f;
-    [SerializeField] float positionSmoothTime = 0.1f;
+    [SerializeField] float rotationSmoothTime = 0.08f;
+    [SerializeField] float positionSmoothTime = 0.08f;
 
     float currYaw = 0f;
     float currPitch = 0f;

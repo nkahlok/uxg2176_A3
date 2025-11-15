@@ -5,8 +5,8 @@ public class GameInput : MonoBehaviour
 {
     InputSystem_Actions inputActions;
 
-    static float horizMouseSens = 8f;
-    static float vertMouseSens = 7f;
+    static float horizMouseSens = 1f;
+    static float vertMouseSens = 1f;
 
     private void OnEnable()
     {
@@ -21,7 +21,7 @@ public class GameInput : MonoBehaviour
         inputActions.Drone.Attack.canceled += DroneAttack_canceled;
 
         // disable all maps except for player
-        //inputActions.Drone.Disable();
+        inputActions.Drone.Disable();
     }
 
     private void OnDisable()
@@ -31,20 +31,21 @@ public class GameInput : MonoBehaviour
         inputActions.Drone.Disable();
     }
 
-    public void SwitchInputMode(Player.PlayerState playerState)
+    public void SwitchInputMode()
     {
         // disable all input action maps
         inputActions.Player.Disable();
         inputActions.Drone.Disable();
 
         // enable the appropriate input action map
-        switch (playerState)
+        switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER:
+            case Player.PlayerState.PLAYER_1ST:
+            case Player.PlayerState.PLAYER_3RD:
                 inputActions.Player.Enable();
                 break;
 
-            case Player.PlayerState.CAMERA:
+            case Player.PlayerState.CCTV:
                 break;
 
             case Player.PlayerState.DRONE:
@@ -61,10 +62,10 @@ public class GameInput : MonoBehaviour
         // returns the relevant input action map movement vector
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER:
+            case Player.PlayerState.PLAYER_3RD:
                 return inputActions.Player.Move.ReadValue<Vector2>();
 
-            case Player.PlayerState.CAMERA:
+            case Player.PlayerState.CCTV:
                 return Vector3.zero;
 
             case Player.PlayerState.DRONE:
@@ -80,10 +81,10 @@ public class GameInput : MonoBehaviour
         // returns the relevant input action map mouse vector
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER:
+            case Player.PlayerState.PLAYER_3RD:
                 return inputActions.Player.Look.ReadValue<Vector2>();
 
-            case Player.PlayerState.CAMERA:
+            case Player.PlayerState.CCTV:
                 return Vector3.zero;
 
             case Player.PlayerState.DRONE:

@@ -7,12 +7,13 @@ public class Player : MonoBehaviour
 
     public enum PlayerState
     {
-        PLAYER,
-        CAMERA,
+        PLAYER_1ST,
+        PLAYER_3RD,
+        CCTV,
         DRONE,
     };
 
-    public PlayerState playerState = PlayerState.PLAYER;
+    public PlayerState playerState = PlayerState.PLAYER_3RD;
 
     [Space(10f)]
     [Header("DEBUG")]
@@ -34,8 +35,7 @@ public class Player : MonoBehaviour
     {
         gameInput = GetComponent<GameInput>();
 
-        playerState = PlayerState.PLAYER;
-        CameraManager.Instance.SetCameraMode(playerState);
+        SwitchMode(PlayerState.PLAYER_3RD);
 
         // DEBUG LOCK CURSOR
         if (doLockCursor)
@@ -49,15 +49,19 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
-            SwitchMode(PlayerState.PLAYER);
+            SwitchMode(PlayerState.PLAYER_3RD);
         }
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
-            SwitchMode(PlayerState.CAMERA);
+            SwitchMode(PlayerState.CCTV);
         }
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             SwitchMode(PlayerState.DRONE);
+        }
+        else if (Input.GetKeyUp(KeyCode.Alpha4))
+        {
+            //SwitchMode(PlayerState.PLAYER_1ST);
         }
     }
 
@@ -66,10 +70,10 @@ public class Player : MonoBehaviour
         // switches player state
         this.playerState = playerState;
         
-        // switches input action map based on the player state
-        gameInput.SwitchInputMode(playerState);
+        // switches input action map
+        gameInput.SwitchInputMode();
 
         // switch camera
-        CameraManager.Instance.SetCameraMode(playerState);
+        CameraManager.Instance.SetCameraMode();
     }
 }
