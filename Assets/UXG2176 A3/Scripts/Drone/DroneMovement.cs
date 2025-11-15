@@ -14,7 +14,7 @@ public class DroneMovement : MonoBehaviour
     Vector3 currVelocity;
     Vector3 smoothedVelocity;
 
-    [SerializeField] DroneCamera droneCamera;
+    [SerializeField] ThirdPersonCamera droneCamera;
     [SerializeField] float maxTiltAngle = 15f;
     [SerializeField] float tiltSmoothTime = 0.3f;
     Quaternion smoothedRotation;

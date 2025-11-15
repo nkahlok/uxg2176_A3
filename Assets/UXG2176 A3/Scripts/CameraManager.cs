@@ -23,5 +23,19 @@ public class CameraManager : MonoBehaviour
     {
         playerCamera.enabled = (playerState == Player.PlayerState.PLAYER);
         droneCamera.enabled = (playerState == Player.PlayerState.DRONE);
+
+        switch (playerState)
+        {
+            case Player.PlayerState.PLAYER:
+                playerCamera.GetComponent<ThirdPersonCamera>().InitCameraPosition();
+                break;
+
+            case Player.PlayerState.DRONE:
+                droneCamera.GetComponent<ThirdPersonCamera>().InitCameraPosition();
+                break;
+
+            default:
+                break;
+        }
     }
 }

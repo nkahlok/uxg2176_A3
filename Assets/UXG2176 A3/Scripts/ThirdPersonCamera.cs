@@ -1,14 +1,15 @@
 using UnityEngine;
 
-public class DroneCamera : MonoBehaviour
+public class ThirdPersonCamera : MonoBehaviour
 {
     Camera cam;
-    Transform parentTransform;
+    Transform targetTransform;
     GameInput gameInput;
 
     [SerializeField] float distance = 8f;
     [SerializeField] float height = 2f;
 
+    [SerializeField] float camColliderRadius = 0.5f;
     [SerializeField] float vertMinAngle = -40f;
     [SerializeField] float vertMaxAngle = 80f;
 
@@ -26,32 +27,38 @@ public class DroneCamera : MonoBehaviour
     {
         cam = GetComponent<Camera>();
 
-        parentTransform = transform.parent;
-        gameInput = parentTransform.GetComponent<GameInput>();
-
-        // position cam at offset
-        transform.position += new Vector3(0f, height, -distance);
-        transform.LookAt(parentTransform.position);
-
-        // init yaw and pitch
-        Vector3 angles = transform.eulerAngles;
-        currYaw = angles.y;
-        currPitch = angles.x;
-        pitchOffset = currPitch;
+        targetTransform = transform.parent;
+        gameInput = targetTransform.GetComponent<GameInput>();
     }
 
     private void LateUpdate()
     {
-        if (Player.Instance.playerState == Player.PlayerState.DRONE)
+        if (cam.enabled)
         {
             // return if no parent
-            if (parentTransform == null)
+            if (targetTransform == null)
             {
                 return;
             }
 
             HandleCameraPosition();
         }
+    }
+
+    public void InitCameraPosition()
+    {
+        // calculate cam pos based on parent rotation, cam height and distance offset
+        Vector3 offset = new Vector3(0f, height, -distance);
+        transform.position = CheckIfCamBlocked(offset);
+
+        // ensures camera is always facing parent
+        transform.LookAt(targetTransform.position);
+
+        // init yaw and pitch
+        Vector3 angles = transform.eulerAngles;
+        currYaw = angles.y;
+        currPitch = angles.x;
+        pitchOffset = currPitch;
     }
 
     protected void HandleCameraPosition()
@@ -68,21 +75,19 @@ public class DroneCamera : MonoBehaviour
         // pitch = vertical rotation around x axis
         // smooth pitch
         float targetPitch = currPitch - input.y; // invert for more intuitive feel
-        targetPitch = Mathf.Clamp(targetPitch, vertMinAngle - pitchOffset, vertMaxAngle - pitchOffset);
+        targetPitch = Mathf.Clamp(targetPitch, vertMinAngle, vertMaxAngle);
         currPitch = Mathf.SmoothDampAngle(currPitch, targetPitch, ref pitchVelocity, rotationSmoothTime);
 
-        // calculate cam pos based on drone rotation, cam height and distance offset
-        Quaternion rotation = Quaternion.Euler(currPitch, currYaw, 0f);
+        // calculate cam pos based on parent rotation, cam height and distance offset
+        Quaternion rotation = Quaternion.Euler(currPitch - pitchOffset, currYaw, 0f);
         Vector3 offset = rotation * new Vector3(0f, height, -distance);
-        Vector3 targetPos = parentTransform.position + offset;
+        Vector3 targetPos = CheckIfCamBlocked(offset);
 
         // smooth position movement
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref positionVelocity, positionSmoothTime);
-        cam.transform.position = transform.position;
 
-        // ensures camera is always facing drone
-        transform.LookAt(parentTransform.position);
-        cam.transform.LookAt(parentTransform.position);
+        // ensures camera is always facing parent
+        transform.LookAt(targetTransform.position);
     }
 
     public float CalcCurrYaw()
@@ -98,5 +103,22 @@ public class DroneCamera : MonoBehaviour
         currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime);
 
         return currYaw;
+    }
+
+    private Vector3 CheckIfCamBlocked(Vector3 camDir)
+    {
+        // spherecast in direction of camera
+        Ray ray = new Ray(targetTransform.position, camDir);
+        if (Physics.SphereCast(ray, camColliderRadius, out RaycastHit hit, camDir.magnitude))
+        {
+            // if obstacle detected, shift camera to be a small distance away from the hit point
+            float camDist = hit.distance - camColliderRadius * 0.1f;
+
+            // calculate cam pos
+            return targetTransform.position + camDir.normalized * camDist;
+        }
+
+        // if no obstacles detected, shift camera to original intended pos
+        return targetTransform.position + camDir;
     }
 }
