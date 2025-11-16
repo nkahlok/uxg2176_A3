@@ -7,13 +7,12 @@ public class Player : MonoBehaviour
 
     public enum PlayerState
     {
-        PLAYER_1ST,
-        PLAYER_3RD,
+        PLAYER,
         CCTV,
         DRONE,
     };
 
-    public PlayerState playerState = PlayerState.PLAYER_3RD;
+    public PlayerState playerState = PlayerState.PLAYER;
 
     [Space(10f)]
     [Header("DEBUG")]
@@ -35,7 +34,7 @@ public class Player : MonoBehaviour
     {
         gameInput = GetComponent<GameInput>();
 
-        SwitchMode(PlayerState.PLAYER_3RD);
+        SwitchMode(PlayerState.PLAYER);
 
         // DEBUG LOCK CURSOR
         if (doLockCursor)
@@ -49,7 +48,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
-            SwitchMode(PlayerState.PLAYER_3RD);
+            SwitchMode(PlayerState.PLAYER);
         }
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
@@ -58,10 +57,6 @@ public class Player : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             SwitchMode(PlayerState.DRONE);
-        }
-        else if (Input.GetKeyUp(KeyCode.Alpha4))
-        {
-            //SwitchMode(PlayerState.PLAYER_1ST);
         }
     }
 

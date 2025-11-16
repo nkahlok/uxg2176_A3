@@ -14,15 +14,12 @@ public class CameraManager : MonoBehaviour
 
     [Space(10)]
     [Header("Rotation Settings")]
-    [SerializeField] float rotationSmoothTime = 0.3f;
+    [SerializeField] float horizontalRotationSpeed = 80f;
+    [SerializeField] float verticalRotationSpeed = 120f;
     [SerializeField] float minPitch = -20f;
     [SerializeField] float maxPitch = 60f;
 
     GameInput gameInput;
-    public float currYaw { get; private set; } = 0f;
-    public float currPitch { get; private set; } = 0f;
-    float yawVelocity = 0f;
-    float pitchVelocity = 0f;
 
     private void Awake()
     {
@@ -44,7 +41,7 @@ public class CameraManager : MonoBehaviour
     private void LateUpdate()
     {
         // rotate the camera if 3rd person view
-        if (Player.Instance.playerState == Player.PlayerState.PLAYER_3RD ||
+        if (Player.Instance.playerState == Player.PlayerState.PLAYER ||
             Player.Instance.playerState == Player.PlayerState.DRONE)
         {
             HandleCameraRotation();
@@ -53,29 +50,16 @@ public class CameraManager : MonoBehaviour
 
     private void InitialiseCamera()
     {
-        // init curr yaw and curr pitch based on curr active cam
+        // set active cam
         activeCam = GetActiveCamera();
-        if (activeCam != null)
-        {
-            Vector3 angles = activeCam.transform.eulerAngles;
-            currYaw = angles.y;
-            currPitch = angles.x;
-
-            // reset velocities
-            yawVelocity = 0f;
-            pitchVelocity = 0f;
-        }
     }
 
-    public CinemachineCamera GetActiveCamera()
+    private CinemachineCamera GetActiveCamera()
     {
         // switch active cam based on player state
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER_1ST:
-                return null;
-
-            case Player.PlayerState.PLAYER_3RD:
+            case Player.PlayerState.PLAYER:
                 return playerVirtualCam;
 
             case Player.PlayerState.DRONE:
@@ -131,10 +115,7 @@ public class CameraManager : MonoBehaviour
         // update active cam priority to highest
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER_1ST:
-                break;
-
-            case Player.PlayerState.PLAYER_3RD:
+            case Player.PlayerState.PLAYER:
                 playerVirtualCam.Priority.Value = 10;
                 InitialiseCamera();
                 break;
@@ -157,19 +138,12 @@ public class CameraManager : MonoBehaviour
     private void HandleCameraRotation()
     {
         // get mouse values
-        Vector2 mouseInput = gameInput.GetMouseVector().normalized;
-        Vector2 mouseSens = gameInput.GetMouseSens();
+        Vector2 mouseInput = gameInput.GetMouseVector();
 
-        // calculate target yaw and pitch
-        float targetYaw = currYaw + mouseInput.x * mouseSens.x;
-        float targetPitch = currPitch - mouseInput.y * mouseSens.y;
-        targetPitch = Mathf.Clamp(targetPitch, minPitch, maxPitch);
-
-        // gradually update curr yaw and pitch
-        currYaw = Mathf.SmoothDampAngle(currYaw, targetYaw, ref yawVelocity, rotationSmoothTime * Time.fixedDeltaTime);
-        currPitch = Mathf.SmoothDampAngle(currPitch, targetPitch, ref pitchVelocity, rotationSmoothTime * Time.fixedDeltaTime);
-
-        // update active cam tracked target
-        activeCam.Follow.rotation = Quaternion.Euler(currPitch, currYaw, 0f);
+        float yawDelta = mouseInput.x * horizontalRotationSpeed * Time.deltaTime;
+        float pitchDelta = -mouseInput.y * verticalRotationSpeed * Time.deltaTime;
+        
+        activeCam.Follow.Rotate(Vector3.right, pitchDelta);
+        activeCam.Follow.parent.Rotate(Vector3.up, yawDelta);
     }
 }

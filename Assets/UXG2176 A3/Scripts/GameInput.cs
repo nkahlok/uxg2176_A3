@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class GameInput : MonoBehaviour
@@ -40,8 +39,7 @@ public class GameInput : MonoBehaviour
         // enable the appropriate input action map
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER_1ST:
-            case Player.PlayerState.PLAYER_3RD:
+            case Player.PlayerState.PLAYER:
                 inputActions.Player.Enable();
                 break;
 
@@ -62,13 +60,15 @@ public class GameInput : MonoBehaviour
         // returns the relevant input action map movement vector
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER_3RD:
+            case Player.PlayerState.PLAYER:
+                Debug.Log($"playerInput: {inputActions.Player.Move.ReadValue<Vector2>()}");
                 return inputActions.Player.Move.ReadValue<Vector2>();
 
             case Player.PlayerState.CCTV:
                 return Vector3.zero;
 
             case Player.PlayerState.DRONE:
+                Debug.Log($"droneInput: {inputActions.Drone.Move.ReadValue<Vector3>()}");
                 return inputActions.Drone.Move.ReadValue<Vector3>();
 
             default:
@@ -81,7 +81,7 @@ public class GameInput : MonoBehaviour
         // returns the relevant input action map mouse vector
         switch (Player.Instance.playerState)
         {
-            case Player.PlayerState.PLAYER_3RD:
+            case Player.PlayerState.PLAYER:
                 return inputActions.Player.Look.ReadValue<Vector2>();
 
             case Player.PlayerState.CCTV:

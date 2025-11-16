@@ -7,9 +7,6 @@ public class DroneMovement : MonoBehaviour
     Rigidbody rb;
     [SerializeField] float maxHorizontalSpeed = 5f;
     [SerializeField] float maxVerticalSpeed = 5f;
-    [SerializeField] float smoothTime = 0.3f;
-    Vector3 currVelocity;
-    Vector3 smoothedVelocity;
 
     [SerializeField] float maxTiltAngle = 25f;
     [SerializeField] float tiltSmoothTime = 0.3f;
@@ -17,11 +14,11 @@ public class DroneMovement : MonoBehaviour
 
     private void Start()
     {
-        gameInput = GetComponent<GameInput>();
+        gameInput = Player.Instance.GetComponent<GameInput>();
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         HandleTilt();
     }
@@ -46,26 +43,14 @@ public class DroneMovement : MonoBehaviour
             camForward.Normalize();
             camRight.Normalize();
 
-            Vector3 moveDir = camForward * input.z + camRight * input.x;
+            Vector3 moveDir = camForward * input.z + camRight * input.x + Vector3.up * input.y;
             moveDir.Normalize();
+            moveDir = new Vector3(moveDir.x * maxHorizontalSpeed, moveDir.y * maxVerticalSpeed, moveDir.z * maxHorizontalSpeed);
 
-            // calculate target velocity
-            Vector3 targetVelocity = moveDir * maxHorizontalSpeed;
-            targetVelocity.y = input.y * maxVerticalSpeed;
+            Debug.Log($"moveDir: {moveDir}");
 
-            // smooth damp curr velocity
-            currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
-
-            // update drone velocity
-            rb.linearVelocity = currVelocity;
-        }
-        else
-        {
-            // smooth damp curr velocity
-            currVelocity = Vector3.SmoothDamp(currVelocity, Vector3.zero, ref smoothedVelocity, smoothTime);
-
-            // update drone velocity
-            rb.linearVelocity = currVelocity;
+            // update player pos
+            rb.MovePosition(rb.position + moveDir * Time.fixedDeltaTime);
         }
     }
 
@@ -110,16 +95,14 @@ public class DroneMovement : MonoBehaviour
             {
                 x = Mathf.SmoothDampAngle(eulerAngles.x, 0f, ref smoothedRotation.x, tiltSmoothTime);
             }
-
-            transform.GetChild(0).rotation = Quaternion.Euler(x, CameraManager.Instance.currYaw, z);
         }
         // tilt drone to normal
         else
         {
             x = Mathf.SmoothDampAngle(eulerAngles.x, 0f, ref smoothedRotation.x, tiltSmoothTime);
             z = Mathf.SmoothDampAngle(eulerAngles.z, 0f, ref smoothedRotation.z, tiltSmoothTime);
-
-            transform.GetChild(0).rotation = Quaternion.Euler(x, eulerAngles.y, z);
         }
+
+        transform.GetChild(0).rotation = Quaternion.Euler(x, eulerAngles.y, z);
     }
 }

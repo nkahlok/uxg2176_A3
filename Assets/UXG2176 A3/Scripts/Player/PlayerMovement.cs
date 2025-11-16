@@ -6,9 +6,6 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float smoothTime = 0.3f;
-    Vector3 currVelocity;
-    Vector3 smoothedVelocity;
 
     private void Start()
     {
@@ -23,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (Player.Instance.playerState == Player.PlayerState.PLAYER_3RD)
+        if (Player.Instance.playerState == Player.PlayerState.PLAYER)
         {
             // get player input
             Vector2 input = gameInput.GetMovementVector();
@@ -39,22 +36,8 @@ public class PlayerMovement : MonoBehaviour
             Vector3 moveDir = camForward * input.y + camRight * input.x;
             moveDir.Normalize();
 
-            // calculate target velocity
-            Vector3 targetVelocity = moveDir * moveSpeed;
-
-            // smooth damp curr velocity
-            currVelocity = Vector3.SmoothDamp(currVelocity, targetVelocity, ref smoothedVelocity, smoothTime);
-
-            // update player velocity
-            rb.linearVelocity = currVelocity;
-        }
-        else
-        {
-            // smooth damp curr velocity
-            currVelocity = Vector3.SmoothDamp(currVelocity, Vector3.zero, ref smoothedVelocity, smoothTime);
-
-            // update player velocity
-            rb.linearVelocity = currVelocity;
+            // update player pos
+            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDir);
         }
     }
 }
