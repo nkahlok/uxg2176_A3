@@ -696,8 +696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf6a53c3c58ae244b84fc768bf52077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 0
-  doLockCursor: 1
+  playerState: 100
 --- !u!114 &699552413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1416,7 +1415,7 @@ MonoBehaviour:
     Enabled: 0
     DefaultMode: 2
   DefaultBlend:
-    Style: 1
+    Style: 0
     Time: 2
     CustomCurve:
       serializedVersion: 2

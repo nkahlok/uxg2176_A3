@@ -47,8 +47,6 @@ public class DroneMovement : MonoBehaviour
             moveDir.Normalize();
             moveDir = new Vector3(moveDir.x * maxHorizontalSpeed, moveDir.y * maxVerticalSpeed, moveDir.z * maxHorizontalSpeed);
 
-            Debug.Log($"moveDir: {moveDir}");
-
             // update player pos
             rb.MovePosition(rb.position + moveDir * Time.fixedDeltaTime);
         }

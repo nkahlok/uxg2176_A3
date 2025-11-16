@@ -40,36 +40,42 @@ public class CameraManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        // rotate the camera if 3rd person view
-        if (Player.Instance.playerState == Player.PlayerState.PLAYER ||
-            Player.Instance.playerState == Player.PlayerState.DRONE)
+        if (activeCam != null)
         {
-            HandleCameraRotation();
+            switch (Player.Instance.playerState)
+            {
+                // rotate the camera if not fixed angle
+                case Player.PlayerState.PLAYER:
+                case Player.PlayerState.DRONE:
+                    HandleCameraRotation();
+                    break;
+
+                case Player.PlayerState.CCTV:
+                default:
+                    break;
+            }
         }
     }
 
     private void InitialiseCamera()
     {
-        // set active cam
-        activeCam = GetActiveCamera();
-    }
-
-    private CinemachineCamera GetActiveCamera()
-    {
         // switch active cam based on player state
         switch (Player.Instance.playerState)
         {
             case Player.PlayerState.PLAYER:
-                return playerVirtualCam;
+                activeCam = playerVirtualCam;
+                break;
 
             case Player.PlayerState.DRONE:
-                return droneVirtualCam;
+                activeCam = droneVirtualCam;
+                break;
 
             case Player.PlayerState.CCTV:
-                return cctvVirtualCams[cctvVirtualCamIndex];
+                activeCam = cctvVirtualCams[cctvVirtualCamIndex];
+                break;
 
             default:
-                return null;
+                break;
         }
     }
 
@@ -142,7 +148,7 @@ public class CameraManager : MonoBehaviour
 
         float yawDelta = mouseInput.x * horizontalRotationSpeed * Time.deltaTime;
         float pitchDelta = -mouseInput.y * verticalRotationSpeed * Time.deltaTime;
-        
+
         activeCam.Follow.Rotate(Vector3.right, pitchDelta);
         activeCam.Follow.parent.Rotate(Vector3.up, yawDelta);
     }

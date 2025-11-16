@@ -10,13 +10,15 @@ public class Player : MonoBehaviour
         PLAYER,
         CCTV,
         DRONE,
+
+        TRANSITION = 100,
     };
 
-    public PlayerState playerState = PlayerState.PLAYER;
+    [HideInInspector] public PlayerState playerState = PlayerState.TRANSITION;
 
-    [Space(10f)]
-    [Header("DEBUG")]
-    [SerializeField] bool doLockCursor = true;
+    [SerializeField] float spawnDelayDuration = 2f;
+    float spawnDelayTimer = 0f;
+    bool hasSpawned = false;
 
     private void Awake()
     {
@@ -34,29 +36,37 @@ public class Player : MonoBehaviour
     {
         gameInput = GetComponent<GameInput>();
 
-        SwitchMode(PlayerState.PLAYER);
-
-        // DEBUG LOCK CURSOR
-        if (doLockCursor)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        spawnDelayTimer = spawnDelayDuration;
     }
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Alpha1))
+        if (hasSpawned)
         {
-            SwitchMode(PlayerState.PLAYER);
+            if (Input.GetKeyUp(KeyCode.Alpha1))
+            {
+                SwitchMode(PlayerState.PLAYER);
+            }
+            else if (Input.GetKeyUp(KeyCode.Alpha2))
+            {
+                //SwitchMode(PlayerState.CCTV);
+            }
+            else if (Input.GetKeyUp(KeyCode.Alpha3))
+            {
+                SwitchMode(PlayerState.DRONE);
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.Alpha2))
+        else
         {
-            SwitchMode(PlayerState.CCTV);
-        }
-        else if (Input.GetKeyUp(KeyCode.Alpha3))
-        {
-            SwitchMode(PlayerState.DRONE);
+            if (spawnDelayTimer > 0f)
+            {
+                spawnDelayTimer -= Time.deltaTime;
+            }
+            else
+            {
+                hasSpawned = true;
+                SwitchMode(PlayerState.PLAYER);
+            }
         }
     }
 

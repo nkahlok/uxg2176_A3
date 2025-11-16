@@ -19,22 +19,22 @@ public class GameInput : MonoBehaviour
         inputActions.Drone.Attack.performed += DroneAttack_performed;
         inputActions.Drone.Attack.canceled += DroneAttack_canceled;
 
-        // disable all maps except for player
-        inputActions.Drone.Disable();
+        // disable all maps
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        inputActions.Disable();
     }
 
     private void OnDisable()
     {
         // disable all maps
-        inputActions.Player.Disable();
-        inputActions.Drone.Disable();
+        inputActions.Disable();
     }
 
     public void SwitchInputMode()
     {
         // disable all input action maps
-        inputActions.Player.Disable();
-        inputActions.Drone.Disable();
+        inputActions.Disable();
 
         // enable the appropriate input action map
         switch (Player.Instance.playerState)
@@ -61,14 +61,12 @@ public class GameInput : MonoBehaviour
         switch (Player.Instance.playerState)
         {
             case Player.PlayerState.PLAYER:
-                Debug.Log($"playerInput: {inputActions.Player.Move.ReadValue<Vector2>()}");
                 return inputActions.Player.Move.ReadValue<Vector2>();
 
             case Player.PlayerState.CCTV:
                 return Vector3.zero;
 
             case Player.PlayerState.DRONE:
-                Debug.Log($"droneInput: {inputActions.Drone.Move.ReadValue<Vector3>()}");
                 return inputActions.Drone.Move.ReadValue<Vector3>();
 
             default:
