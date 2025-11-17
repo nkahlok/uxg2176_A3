@@ -107,10 +107,19 @@ public class DroneShooting : MonoBehaviour
         if (Physics.Raycast(bulletSpawnPoint.position, targetDir, out RaycastHit hit, maxRange, hitLayers))
         {
             targetPos = hit.point;
+            if (hit.transform.tag == "LightSwitch")
+            {
+                crosshair.color = Color.green;
+            }
+            else
+            {
+                crosshair.color = Color.red;
+            }
         }
         else
         {
             targetPos = bulletSpawnPoint.position + targetDir * maxRange;
+            crosshair.color = Color.white;
         }
 
         Vector3 screenPos = Camera.main.WorldToScreenPoint(targetPos);

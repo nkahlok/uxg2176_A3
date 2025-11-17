@@ -21,9 +21,9 @@ public class Interactable : MonoBehaviour
         {
             isPlayerWithinRange = true;
         }
-        else if (other.tag == "Bullet")
+        else if (other.tag == "Projectile")
         {
-            if (isActivated)
+            if (!isActivated)
             {
                 Activate();
             }
