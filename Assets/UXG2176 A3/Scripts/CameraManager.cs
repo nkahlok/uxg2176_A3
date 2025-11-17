@@ -149,7 +149,18 @@ public class CameraManager : MonoBehaviour
         float yawDelta = mouseInput.x * horizontalRotationSpeed * Time.deltaTime;
         float pitchDelta = -mouseInput.y * verticalRotationSpeed * Time.deltaTime;
 
-        activeCam.Follow.Rotate(Vector3.right, pitchDelta);
         activeCam.Follow.parent.Rotate(Vector3.up, yawDelta);
+        activeCam.Follow.Rotate(Vector3.right, pitchDelta);
+
+        // clamp pitch
+        Vector3 angles = activeCam.Follow.eulerAngles;
+        if (angles.x > 180f)
+        {
+            angles.x -= 360f;
+        }
+
+        angles.x = Mathf.Clamp(angles.x, -maxPitch, -minPitch);
+        angles.z = 0f;
+        activeCam.Follow.rotation = Quaternion.Euler(angles);
     }
 }
