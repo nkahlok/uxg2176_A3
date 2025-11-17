@@ -1,11 +1,17 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
     InputSystem_Actions inputActions;
 
-    static float horizMouseSens = 1f;
-    static float vertMouseSens = 1f;
+    public event EventHandler OnPlayerInteractAction;
+    public event EventHandler OnDroneShootAction;
+    public event EventHandler OnDroneReloadAction;
+
+    [SerializeField] float horizMouseSens = 1f;
+    [SerializeField] float vertMouseSens = 1f;
 
     private void OnEnable()
     {
@@ -17,7 +23,7 @@ public class GameInput : MonoBehaviour
 
         inputActions.Drone.Enable();
         inputActions.Drone.Attack.performed += DroneAttack_performed;
-        inputActions.Drone.Attack.canceled += DroneAttack_canceled;
+        inputActions.Drone.Reload.performed += DroneReload_performed;
 
         // disable all maps
         Cursor.lockState = CursorLockMode.Locked;
@@ -98,18 +104,18 @@ public class GameInput : MonoBehaviour
         return new Vector2 (horizMouseSens, vertMouseSens);
     }
 
-    private void PlayerInteract_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void PlayerInteract_performed(InputAction.CallbackContext obj)
     {
-
+        OnPlayerInteractAction?.Invoke(this, EventArgs.Empty);
     }
 
-    private void DroneAttack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void DroneAttack_performed(InputAction.CallbackContext obj)
     {
-
+        OnDroneShootAction?.Invoke(this, EventArgs.Empty);
     }
 
-    private void DroneAttack_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void DroneReload_performed(InputAction.CallbackContext obj)
     {
-
+        OnDroneReloadAction?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -12,6 +12,8 @@ public class DroneMovement : MonoBehaviour
     [SerializeField] float tiltSmoothTime = 0.3f;
     Quaternion smoothedRotation;
 
+    [SerializeField] GameObject droneVisual;
+
     private void Start()
     {
         gameInput = Player.Instance.GetComponent<GameInput>();
@@ -23,7 +25,7 @@ public class DroneMovement : MonoBehaviour
         HandleTilt();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         HandleMovement();
     }
@@ -48,7 +50,7 @@ public class DroneMovement : MonoBehaviour
             moveDir = new Vector3(moveDir.x * maxHorizontalSpeed, moveDir.y * maxVerticalSpeed, moveDir.z * maxHorizontalSpeed);
 
             // update player pos
-            rb.MovePosition(rb.position + moveDir * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + moveDir * Time.deltaTime);
         }
     }
 
@@ -56,7 +58,7 @@ public class DroneMovement : MonoBehaviour
     {
         // get input and curr tilt angles
         Vector3 input = gameInput.GetMovementVector();
-        Vector3 eulerAngles = transform.GetChild(0).eulerAngles;
+        Vector3 eulerAngles = droneVisual.transform.eulerAngles;
         float x = 0f;
         float z = 0f;
 
@@ -101,6 +103,6 @@ public class DroneMovement : MonoBehaviour
             z = Mathf.SmoothDampAngle(eulerAngles.z, 0f, ref smoothedRotation.z, tiltSmoothTime);
         }
 
-        transform.GetChild(0).rotation = Quaternion.Euler(x, eulerAngles.y, z);
+        droneVisual.transform.rotation = Quaternion.Euler(x, eulerAngles.y, z);
     }
 }

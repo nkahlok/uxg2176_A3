@@ -97,3 +97,37 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+Assets/Camera/Scripts/RayCastTarget.cs.meta
+Assets/Camera/Scripts/RayCastTarget.cs
+Assets/Camera/Scripts/MouseCameraScript.cs.meta
+Assets/Camera/Scripts/MouseCameraScript.cs
+Assets/Camera/Scripts/CameraTrigger.cs.meta
+Assets/Camera/Scripts/CameraTrigger.cs
+Assets/Camera/Scripts/CameraController.cs.meta
+Assets/Camera/Scripts/CameraController.cs
+Assets/Camera/Scripts/BetterFollowScript.cs.meta
+Assets/Camera/Scripts/BetterFollowScript.cs
+Assets/Camera/Scripts/BasicMovementScript.cs.meta
+Assets/Camera/Scripts/BasicMovementScript.cs
+Assets/Camera/Scripts/BasicFollowScript.cs.meta
+Assets/Camera/Scripts/BasicFollowScript.cs
+Assets/Camera/Scripts.meta
+Assets/Camera/Scene/CameraSwitching.unity.meta
+Assets/Camera/Scene/CameraSwitching.unity
+Assets/Camera/Scene/BetterFollowCamera.unity.meta
+Assets/Camera/Scene/BetterFollowCamera.unity
+Assets/Camera/Scene/BasicFollowCamera.unity.meta
+Assets/Camera/Scene/BasicFollowCamera.unity
+Assets/Camera/Scene/BasicFirstPersonCamera.unity.meta
+Assets/Camera/Scene/BasicFirstPersonCamera.unity
+Assets/Camera/Scene/3DDemo.unity.meta
+Assets/Camera/Scene/3DDemo.unity
+Assets/Camera/Scene.meta
+Assets/Camera/Material/Red.mat.meta
+Assets/Camera/Material/Red.mat
+Assets/Camera/Material/Green.mat.meta
+Assets/Camera/Material/Green.mat
+Assets/Camera/Material/Blue.mat.meta
+Assets/Camera/Material/Blue.mat
+Assets/Camera/Material.meta
+Assets/Camera.meta

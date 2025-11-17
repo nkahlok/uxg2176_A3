@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     float spawnDelayTimer = 0f;
     bool hasSpawned = false;
 
+    [SerializeField] Canvas playerCanvas;
+    [SerializeField] Canvas droneCanvas;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,10 +40,14 @@ public class Player : MonoBehaviour
         gameInput = GetComponent<GameInput>();
 
         spawnDelayTimer = spawnDelayDuration;
+
+        // disable all UI except player
+        droneCanvas.enabled = false;
     }
 
     private void Update()
     {
+        // spawn delay
         if (hasSpawned)
         {
             if (Input.GetKeyUp(KeyCode.Alpha1))
@@ -80,5 +87,22 @@ public class Player : MonoBehaviour
 
         // switch camera
         CameraManager.Instance.SetCameraMode();
+
+        // switch UI
+        playerCanvas.enabled = false;
+        droneCanvas.enabled = false;
+        switch (playerState)
+        {
+            case PlayerState.PLAYER:
+                playerCanvas.enabled = true;
+                break;
+
+            case PlayerState.DRONE:
+                droneCanvas.enabled = true;
+                break;
+
+            default:
+                break;
+        }
     }
 }
