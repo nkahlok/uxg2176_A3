@@ -7,12 +7,12 @@ public class Interactable : MonoBehaviour
     
     public virtual void Activate()
     {
-
+        isActivated = true;
     }
 
     public virtual void Deactivate()
     {
-
+        isActivated = false;
     }
 
     private void OnTriggerEnter(Collider other)
