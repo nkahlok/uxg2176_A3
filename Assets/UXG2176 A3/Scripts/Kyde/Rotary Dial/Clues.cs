@@ -12,11 +12,13 @@ public class Clues : MonoBehaviour
     {
         instance = this;
         
+        // Assigns the clues automatically from the child count
         for(int i = 1; i <= clues.Length; i++)
         {
             clues[i-1] = transform.GetChild(i).gameObject;
         }
 
+        // Turns off all the clues after
         for(int i = 0; i < clues.Length; i++)
         {
             clues[i].SetActive(false);
@@ -27,6 +29,7 @@ public class Clues : MonoBehaviour
     // Update is called once per frame  
     void Update()
     {
+        // Unlocks the clues based on clue unlock count
         if(clueUnlockCount >= 0 && clueUnlockCount <= clues.Length - 1)
             clues[clueUnlockCount].SetActive(true);
     }

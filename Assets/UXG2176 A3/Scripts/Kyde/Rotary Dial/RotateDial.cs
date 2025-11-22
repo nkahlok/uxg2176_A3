@@ -69,7 +69,7 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     {
         isDragging = false;
 
-        // Start coroutine to return to original rotation
+        // Start coroutine to return to original rotation once we let go
         StartCoroutine(ReturnToOriginalRotation());
     }
 
@@ -89,22 +89,4 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         
     }
 
-    /*
-    // Public method to get current rotation value
-    public float GetRotation()
-    {
-        return currentRotation;
-    }
-
-    // Public method to set rotation programmatically
-    public void SetRotation(float angle)
-    {
-        currentRotation = angle;
-        if (limitRotation)
-        {
-            currentRotation = Mathf.Clamp(currentRotation, minAngle, maxAngle);
-        }
-        dialTransform.rotation = Quaternion.Euler(0, 0, currentRotation);
-    }
-    */
 }

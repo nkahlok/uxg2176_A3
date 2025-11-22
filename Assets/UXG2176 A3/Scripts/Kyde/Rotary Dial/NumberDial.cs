@@ -40,8 +40,11 @@ public class NumberDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         this.gameObject.GetComponentInParent<RotaryDial>().OnPointerDown(eventData);
         dialThisNumber = true;
 
-        //Reset the cooldown as we are constantly holding onto it
+        // Reset the cooldown as we are constantly holding onto it
         intervalBetweenNumbers = 2f;
+
+        // Play SFX
+        KydeSoundManager.instance.PlayDialSound();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -50,7 +53,9 @@ public class NumberDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         this.gameObject.GetComponentInParent<RotaryDial>().OnPointerUp(eventData);
         numberReleased = true;
 
-       
+        // Play SFX
+        KydeSoundManager.instance.PlayDialSound();
+
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -74,7 +79,6 @@ public class NumberDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             dialThisNumber = false;
             numberReleased = false;
 
-            
         }
     }
 }
