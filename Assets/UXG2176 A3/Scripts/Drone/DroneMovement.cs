@@ -25,7 +25,7 @@ public class DroneMovement : MonoBehaviour
         HandleTilt();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         HandleMovement();
     }
@@ -37,20 +37,25 @@ public class DroneMovement : MonoBehaviour
             // get player input
             Vector3 input = gameInput.GetMovementVector();
 
-            // get flattened cam vectors and normalise
-            Vector3 camForward = CameraManager.Instance.GetCameraForward();
-            Vector3 camRight = CameraManager.Instance.GetCameraRight();
-            camForward.y = 0f;
-            camRight.y = 0f;
-            camForward.Normalize();
-            camRight.Normalize();
+            if (input.sqrMagnitude > 0.1f)
+            {
+                // get flattened cam vectors and normalise
+                Vector3 camForward = CameraManager.Instance.GetCameraForward();
+                Vector3 camRight = CameraManager.Instance.GetCameraRight();
+                camForward.y = 0f;
+                camRight.y = 0f;
+                camForward.Normalize();
+                camRight.Normalize();
 
-            Vector3 moveDir = camForward * input.z + camRight * input.x + Vector3.up * input.y;
-            moveDir.Normalize();
-            moveDir = new Vector3(moveDir.x * maxHorizontalSpeed, moveDir.y * maxVerticalSpeed, moveDir.z * maxHorizontalSpeed);
+                Vector3 moveDir = camForward * input.z + camRight * input.x + Vector3.up * input.y;
+                moveDir.Normalize();
+                moveDir = new Vector3(moveDir.x * maxHorizontalSpeed, moveDir.y * maxVerticalSpeed, moveDir.z * maxHorizontalSpeed);
 
-            // update player pos
-            rb.MovePosition(rb.position + moveDir * Time.deltaTime);
+                // update player pos
+                rb.MovePosition(rb.position + moveDir * Time.fixedDeltaTime);
+            }
+
+            rb.linearVelocity = Vector3.zero;
         }
     }
 
