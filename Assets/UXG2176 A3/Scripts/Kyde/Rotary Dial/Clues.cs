@@ -1,0 +1,39 @@
+using UnityEngine;
+
+public class Clues : MonoBehaviour
+{
+    public static Clues instance; // Singleton 
+
+    public int clueUnlockCount = -1;
+    public GameObject[] clues = new GameObject[3];
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        instance = this;
+        
+        for(int i = 1; i <= clues.Length; i++)
+        {
+            clues[i-1] = transform.GetChild(i).gameObject;
+        }
+
+        for(int i = 0; i < clues.Length; i++)
+        {
+            clues[i].SetActive(false);
+        }
+
+    }
+
+    // Update is called once per frame  
+    void Update()
+    {
+        if(clueUnlockCount >= 0 && clueUnlockCount <= clues.Length - 1)
+            clues[clueUnlockCount].SetActive(true);
+    }
+
+    public void clueUnlockCountIncrease()
+    {
+        clueUnlockCount++;
+    }
+
+}
