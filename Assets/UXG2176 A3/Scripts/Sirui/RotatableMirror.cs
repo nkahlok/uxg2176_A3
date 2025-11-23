@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class RotatableMirror : Interactable
 {
+    [Header("Interaction Mode")]
+    [SerializeField] private bool canBeShot = false; // Can drone shoot it?
+    [SerializeField] private bool canBeWalked = true; // Can player walk to it?
+
+
+
     [Header("Mirror Settings")]
     [SerializeField] private float rotationAmount = 45f; // How much to rotate per interaction
     [SerializeField] private Vector3 rotationAxis = Vector3.up; // Axis to rotate around (Y-axis by default)
@@ -30,7 +36,7 @@ public class RotatableMirror : Interactable
             }
         }
     }
-
+    
     public override void Activate()
     {
         base.Activate();
