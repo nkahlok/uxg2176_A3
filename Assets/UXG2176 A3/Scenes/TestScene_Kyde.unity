@@ -1296,7 +1296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialTransform: {fileID: 0}
   rotationSpeed: 1
-  returnSpeed: 5
+  returnSpeed: 8
 --- !u!114 &78143010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8162,7 +8162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialTransform: {fileID: 0}
   rotationSpeed: 1
-  returnSpeed: 5
+  returnSpeed: 8
 --- !u!114 &506731846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10785,7 +10785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialTransform: {fileID: 0}
   rotationSpeed: 1
-  returnSpeed: 5
+  returnSpeed: 8
 --- !u!114 &765561670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19601,7 +19601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialTransform: {fileID: 0}
   rotationSpeed: 1
-  returnSpeed: 5
+  returnSpeed: 8
 --- !u!58 &1589170748
 CircleCollider2D:
   m_ObjectHideFlags: 0
