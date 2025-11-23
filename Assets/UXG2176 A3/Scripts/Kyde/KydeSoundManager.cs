@@ -14,45 +14,28 @@ public class KydeSoundManager : MonoBehaviour
     {   
         audioSource = GetComponent<AudioSource>();
         instance = this;
+
+        // Play drone SFX but mute volume
+        drone.volume = 0.0f;
+        drone.Play();
     }
 
-    // Example: Play sound when a key is pressed
     void Update()
     {
-        // Play drone SFX if we press 3 while not in drone state
-        if(Player.Instance.playerState != Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha3))
-        //if(Player.Instance.playerState == Player.PlayerState.DRONE)
+        // unmute when in drone state
+        if(Player.Instance.playerState == Player.PlayerState.DRONE)
         {
-            PlayDroneSound();
+            drone.volume = 1f;
         }
-        // Stop drone SFX if we press any keys to get out of drone state while in drone state
-        else if (Player.Instance.playerState == Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha1) || Player.Instance.playerState == Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha2))
-        //else if (Player.Instance.playerState != Player.PlayerState.DRONE)
+        // mute when not in drone state
+        else
         {
-            StopDroneSound();
+            drone.volume = 0f;
         }
     }
 
     public void PlayDialSound()
     {
-       
         audioSource.PlayOneShot(telephone); // Plays the sound effect once
-  
     }
-
-    public void PlayDroneSound()
-    {
-        // Enable looping for the drone SFX
-        drone.Play();
-
-    }
-
-    public void StopDroneSound()
-    {
-
-        drone.Stop();
-
-    }
-
-
 }
