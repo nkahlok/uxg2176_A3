@@ -6,7 +6,7 @@ public class RotateSwitch : MonoBehaviour
     [Header("Player Detection")]
     [SerializeField] private Transform player;
     [SerializeField] private float detectionRadius = 3f; // The radius which player can interact with the switch
-    [SerializeField] private GameObject textCanvas;
+    [SerializeField] private GameObject interactText;
     [SerializeField] private List<GameObject> platforms;
     [SerializeField] private List<GameObject> platformsColliders;
     [SerializeField] private List<GameObject> switchList;
@@ -19,22 +19,17 @@ public class RotateSwitch : MonoBehaviour
     private Quaternion targetRotation;
     private void Start()
     {
-        textCanvas.SetActive(false);
+        interactText.SetActive(false);
 
-        // Set all paltforms to false
-        foreach(GameObject obj in platforms)
-            obj.SetActive(false);
-
-        // Set all platforms to true
-        foreach (GameObject obj in platformsColliders)
-            obj.SetActive(true);
+        foreach(GameObject col in platformsColliders)
+            col.SetActive(false);
     }
     void Update()
     {
-        textCanvas.SetActive(true);
+        interactText.SetActive(true);
         if (IsNearSwitch())
         {
-            // Player presses E
+            // Player presses e to interact
             if (Input.GetKeyDown(KeyCode.E) && !isRotating)
             {
                 // Set all platforms to false
@@ -45,35 +40,15 @@ public class RotateSwitch : MonoBehaviour
         }
         else
         {
-            textCanvas.SetActive(false);
+            interactText.SetActive(false);
         }
 
         // Smooth rotation
         if (isRotating)
         {
-            //// Set all platform colliders to true
-            //foreach (GameObject obj in platformsColliders)
-            //    obj.SetActive(true);
-
-            //objectToRotate.rotation = Quaternion.Lerp(
-            //    objectToRotate.rotation,
-            //    targetRotation,
-            //    Time.deltaTime * rotationSpeed
-            //);
-
-            //if (Quaternion.Angle(objectToRotate.rotation, targetRotation) < 0.5f)
-            //{
-            //    // Set all platforms to false
-            //    foreach (GameObject obj in platforms)
-            //        obj.SetActive(true);
-
-            //    // Set all platform colliders to true
-            //    foreach (GameObject obj in platformsColliders)
-            //        obj.SetActive(false);
-
-            //    isRotating = false;
-            //}
-
+            // Disable colliders only after rotation finished
+            foreach (GameObject obj in platformsColliders)
+                obj.SetActive(true);
             // Rotate towards target rotation
             objectToRotate.rotation = Quaternion.RotateTowards(
                 objectToRotate.rotation,
