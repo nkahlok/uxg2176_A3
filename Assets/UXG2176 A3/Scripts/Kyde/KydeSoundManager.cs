@@ -6,7 +6,7 @@ public class KydeSoundManager : MonoBehaviour
 
 
     public AudioClip telephone;
-    public AudioClip drone;
+    public AudioSource drone;
 
     public static KydeSoundManager instance; // Singleton
 
@@ -21,11 +21,13 @@ public class KydeSoundManager : MonoBehaviour
     {
         // Play drone SFX if we press 3 while not in drone state
         if(Player.Instance.playerState != Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha3))
+        //if(Player.Instance.playerState == Player.PlayerState.DRONE)
         {
             PlayDroneSound();
         }
         // Stop drone SFX if we press any keys to get out of drone state while in drone state
         else if (Player.Instance.playerState == Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha1) || Player.Instance.playerState == Player.PlayerState.DRONE && Input.GetKeyDown(KeyCode.Alpha2))
+        //else if (Player.Instance.playerState != Player.PlayerState.DRONE)
         {
             StopDroneSound();
         }
@@ -41,16 +43,14 @@ public class KydeSoundManager : MonoBehaviour
     public void PlayDroneSound()
     {
         // Enable looping for the drone SFX
-        audioSource.loop = true;
-        audioSource.PlayOneShot(drone);
+        drone.Play();
 
     }
 
     public void StopDroneSound()
     {
 
-        audioSource.loop = false;
-        audioSource.Stop();
+        drone.Stop();
 
     }
 
