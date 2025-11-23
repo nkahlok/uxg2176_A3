@@ -39,8 +39,7 @@ public class Keypad : MonoBehaviour
     {
         if (button.buttonType == ButtonType.CLEAR)
         {
-            enteredCode = string.Empty;
-            displayText.text = enteredCode;
+            ClearInput();
             return;
         }
 
@@ -106,10 +105,15 @@ public class Keypad : MonoBehaviour
     private void UnlockPuzzle()
     {
         door.SetActive(false);
-        enteredCode = string.Empty;
-        displayText.text = enteredCode;
+        ClearInput();
         isUnlocked = true;
 
         Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
+    }
+
+    public void ClearInput()
+    {
+        enteredCode = string.Empty;
+        displayText.text = enteredCode;
     }
 }

@@ -10,7 +10,7 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnDroneShootAction;
     public event EventHandler OnDroneReloadAction;
     public event EventHandler OnDroneReturnAction;
-    public event EventHandler OnUIReturnAction;
+    public event EventHandler OnKeypadReturnAction;
 
     [SerializeField] float horizMouseSens = 1f;
     [SerializeField] float vertMouseSens = 1f;
@@ -140,6 +140,6 @@ public class GameInput : MonoBehaviour
 
     private void UIReturn_performed(InputAction.CallbackContext obj)
     {
-        OnUIReturnAction?.Invoke(this, EventArgs.Empty);
+        OnKeypadReturnAction?.Invoke(this, EventArgs.Empty);
     }
 }
