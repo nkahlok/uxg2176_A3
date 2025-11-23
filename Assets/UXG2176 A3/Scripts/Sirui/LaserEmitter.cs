@@ -17,10 +17,15 @@ public class LaserEmitter : MonoBehaviour
     [SerializeField] private float laserWidth = 0.1f;
 
     private LaserReceiver currentReceiver = null;
-
+    private int previousReflectionCount = 0;
+    private bool isFirstFrame = true;
     private void Start()
     {
         SetupLineRenderer();
+        if (LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.PlayLaserHum();
+        }
     }
 
     private void Update()
@@ -56,6 +61,7 @@ public class LaserEmitter : MonoBehaviour
 
         bool hitReceiver = false;
         LaserReceiver hitReceiverComponent = null;
+        int reflectionCount = 0;
 
         // Trace the laser through reflections
         for (int i = 0; i < maxReflections; i++)
@@ -78,7 +84,7 @@ public class LaserEmitter : MonoBehaviour
                 RotatableMirror mirror = hit.collider.GetComponent<RotatableMirror>();
                 if (mirror != null)
                 {
-
+                    reflectionCount++;
                     Vector3 mirrorNormal = mirror.GetMirrorNormal();
                     currentDirection = Vector3.Reflect(currentDirection, mirrorNormal);
                     
@@ -96,6 +102,13 @@ public class LaserEmitter : MonoBehaviour
                 break;
             }
         }
+
+        if (!isFirstFrame && reflectionCount != previousReflectionCount && LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.PlayLaserReflect();
+        }
+        previousReflectionCount = reflectionCount;
+        isFirstFrame = false; // After first frame, allow sounds
 
         // Update LineRenderer
         lineRenderer.positionCount = pointCount;
@@ -126,6 +139,15 @@ public class LaserEmitter : MonoBehaviour
                 currentReceiver.OnLaserExit();
                 currentReceiver = null;
             }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Stop laser hum when emitter is destroyed
+        if (LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.StopLaserHum();
         }
     }
 }

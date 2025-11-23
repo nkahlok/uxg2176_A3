@@ -41,6 +41,11 @@ public class RotatableMirror : Interactable
     {
         base.Activate();
         RotateMirror();
+
+        if (LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.PlayMirrorRotate();
+        }
     }
 
     private void RotateMirror()

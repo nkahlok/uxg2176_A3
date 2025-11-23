@@ -22,6 +22,7 @@ public class LaserReceiver : MonoBehaviour
     private bool isDoorOpen = false;
     private Vector3 closedPosition;
     private Vector3 targetPosition;
+    private bool hasPlayedHitSound = false;
 
     private void Start()
     {
@@ -57,6 +58,18 @@ public class LaserReceiver : MonoBehaviour
         {
             doorRenderer.material = activeMaterial;
         }
+
+        if (!hasPlayedHitSound && LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.PlayReceiverHit();
+            hasPlayedHitSound = true;
+            
+            // If continuous hit required, play charging sound
+            if (requiresContinuousHit)
+            {
+                LaserPuzzleAudioManager.Instance.PlayReceiverCharging();
+            }
+        }
         if (!requiresContinuousHit && !isDoorOpen)
         {
             OpenDoor();
@@ -67,10 +80,14 @@ public class LaserReceiver : MonoBehaviour
     {
         isBeingHit = false;
         hitTimer = 0f;
-
+        hasPlayedHitSound = false;
         if (doorRenderer != null && inactiveMaterial != null)
         {
             doorRenderer.material = inactiveMaterial;
+        }
+        if (LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.StopReceiverCharging();
         }
     }
 
@@ -78,6 +95,13 @@ public class LaserReceiver : MonoBehaviour
     {
         isDoorOpen = true;
         targetPosition = closedPosition + openPosition;
+
+        if (LaserPuzzleAudioManager.Instance != null)
+        {
+            LaserPuzzleAudioManager.Instance.StopReceiverCharging();
+            LaserPuzzleAudioManager.Instance.PlayDoorOpen();
+            LaserPuzzleAudioManager.Instance.PlaySuccess();
+        }
 
         if (loadNextLevel)
         {
