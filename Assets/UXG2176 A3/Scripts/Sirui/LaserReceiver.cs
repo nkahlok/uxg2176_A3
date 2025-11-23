@@ -111,6 +111,8 @@ public class LaserReceiver : MonoBehaviour
 
     private void LoadNextScene()
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex + 1);
     }

@@ -9,9 +9,15 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnPauseAction;
 
     public event EventHandler OnPlayerInteractAction;
+
+    public event EventHandler OnCCTVCycleLeftAction;
+    public event EventHandler OnCCTVCycleRightAction;
+    public event EventHandler OnCCTVReturnAction;
+
     public event EventHandler OnDroneShootAction;
     public event EventHandler OnDroneReloadAction;
     public event EventHandler OnDroneReturnAction;
+
     public event EventHandler OnKeypadReturnAction;
 
     [SerializeField] float horizMouseSens = 1f;
@@ -25,6 +31,12 @@ public class GameInput : MonoBehaviour
         inputActions.Player.Enable();
         inputActions.Player.Interact.performed += PlayerInteract_performed;
         inputActions.Player.Pause.performed += Pause_performed;
+
+        inputActions.CCTV.Enable();
+        inputActions.CCTV.CycleLeft.performed += CCTVCycleLeft_performed;
+        inputActions.CCTV.CycleRight.performed += CCTVCycleRight_performed;
+        inputActions.CCTV.Return.performed += CCTVReturn_performed;
+        inputActions.CCTV.Pause.performed += Pause_performed;
 
         inputActions.Drone.Enable();
         inputActions.Drone.Attack.performed += DroneAttack_performed;
@@ -63,6 +75,7 @@ public class GameInput : MonoBehaviour
                 break;
 
             case Player.PlayerState.CCTV:
+                inputActions.CCTV.Enable();
                 break;
 
             case Player.PlayerState.DRONE:
@@ -126,6 +139,21 @@ public class GameInput : MonoBehaviour
     private void PlayerInteract_performed(InputAction.CallbackContext obj)
     {
         OnPlayerInteractAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void CCTVCycleLeft_performed(InputAction.CallbackContext obj)
+    {
+        OnCCTVCycleLeftAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void CCTVCycleRight_performed(InputAction.CallbackContext obj)
+    {
+        OnCCTVCycleRightAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void CCTVReturn_performed(InputAction.CallbackContext obj)
+    {
+        OnCCTVReturnAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void DroneAttack_performed(InputAction.CallbackContext obj)

@@ -21,11 +21,11 @@ public class Player : MonoBehaviour
     [SerializeField] float spawnDelayDuration = 2f;
     float spawnDelayTimer = 0f;
     bool hasSpawned = false;
-    private int currentCCTVIndex = 0;
 
     [SerializeField] Canvas pauseCanvas;
 
     [SerializeField] Canvas playerCanvas;
+    [SerializeField] Canvas cctvCanvas;
     [SerializeField] Canvas droneCanvas;
     [SerializeField] Canvas keypadCanvas;
 
@@ -49,10 +49,10 @@ public class Player : MonoBehaviour
         playerState = PlayerState.TRANSITION;
         spawnDelayTimer = spawnDelayDuration;
         hasSpawned = false;
-        currentCCTVIndex = 0;
 
         // disable all UI except player
         if (pauseCanvas != null) pauseCanvas.enabled = false;
+        if (cctvCanvas != null) cctvCanvas.enabled = false;
         if (droneCanvas != null) droneCanvas.enabled = false;
         if (keypadCanvas != null) keypadCanvas.enabled = false;
     }
@@ -60,30 +60,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         // spawn delay
-        if (hasSpawned)
-        {
-            if (Input.GetKeyUp(KeyCode.Alpha1))
-            {
-                SwitchMode(PlayerState.PLAYER);
-            }
-            else if (Input.GetKeyUp(KeyCode.Alpha2))
-            {
-                if (playerState == PlayerState.CCTV)
-                {
-                    CycleCCTVCamera();
-                }
-                else
-                {
-                    currentCCTVIndex = 0;
-                    SwitchMode(PlayerState.CCTV);
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.Alpha3))
-            {
-                SwitchMode(PlayerState.DRONE);
-            }
-        }
-        else
+        if (!hasSpawned)
         {
             if (spawnDelayTimer > 0f)
             {
@@ -95,20 +72,29 @@ public class Player : MonoBehaviour
                 SwitchMode(PlayerState.PLAYER);
             }
         }
-    }
-
-    private void CycleCCTVCamera()
-    {
-        currentCCTVIndex++;
-
-        int numCCTVCameras = CameraManager.Instance.GetCCTVCameraCount();
-        
-        if (currentCCTVIndex >= numCCTVCameras)
-        {
-            currentCCTVIndex = 0;
-        }
-        
-        CameraManager.Instance.SetCameraMode(currentCCTVIndex);
+        //else
+        //{
+        //    if (Input.GetKeyUp(KeyCode.Alpha1))
+        //    {
+        //        SwitchMode(PlayerState.PLAYER);
+        //    }
+        //    else if (Input.GetKeyUp(KeyCode.Alpha2))
+        //    {
+        //        if (playerState == PlayerState.CCTV)
+        //        {
+        //            CycleCCTVCamera();
+        //        }
+        //        else
+        //        {
+        //            currentCCTVIndex = 0;
+        //            SwitchMode(PlayerState.CCTV);
+        //        }
+        //    }
+        //    else if (Input.GetKeyUp(KeyCode.Alpha3))
+        //    {
+        //        SwitchMode(PlayerState.DRONE);
+        //    }
+        //}
     }
 
     public void SwitchMode(PlayerState playerState)
@@ -120,17 +106,11 @@ public class Player : MonoBehaviour
         gameInput.SwitchInputMode();
 
         // switch camera
-        if (playerState == PlayerState.CCTV)
-        {
-            CameraManager.Instance.SetCameraMode(currentCCTVIndex);
-        }
-        else
-        {
-            CameraManager.Instance.SetCameraMode();
-        }
+        CameraManager.Instance.SetCameraMode();
 
         // switch UI
         if (playerCanvas != null) playerCanvas.enabled = false;
+        if (cctvCanvas != null) cctvCanvas.enabled = false;
         if (droneCanvas != null) droneCanvas.enabled = false;
         if (keypadCanvas != null) keypadCanvas.enabled = false;
 
@@ -138,6 +118,10 @@ public class Player : MonoBehaviour
         {
             case PlayerState.PLAYER:
                 if (playerCanvas != null) playerCanvas.enabled = true;
+                break;
+
+            case PlayerState.CCTV:
+                if (cctvCanvas != null) cctvCanvas.enabled = true;
                 break;
 
             case PlayerState.DRONE:
@@ -148,7 +132,6 @@ public class Player : MonoBehaviour
                 if (keypadCanvas != null) keypadCanvas.enabled = true;
                 break;
 
-            case PlayerState.CCTV:
             default:
                 break;
         }
@@ -162,6 +145,7 @@ public class Player : MonoBehaviour
         Cursor.visible = true;
 
         if (playerCanvas != null) playerCanvas.enabled = false;
+        if (cctvCanvas != null) cctvCanvas.enabled = false;
         if (droneCanvas != null) droneCanvas.enabled = false;
         if (keypadCanvas != null) keypadCanvas.enabled = false;
     }
@@ -179,6 +163,10 @@ public class Player : MonoBehaviour
                 if (playerCanvas != null) playerCanvas.enabled = true;
                 break;
 
+            case PlayerState.CCTV:
+                if (cctvCanvas != null) cctvCanvas.enabled = true;
+                break;
+
             case PlayerState.DRONE:
                 if (droneCanvas != null) droneCanvas.enabled = true;
                 break;
@@ -187,7 +175,6 @@ public class Player : MonoBehaviour
                 if (keypadCanvas != null) keypadCanvas.enabled = true;
                 break;
 
-            case PlayerState.CCTV:
             default:
                 break;
         }

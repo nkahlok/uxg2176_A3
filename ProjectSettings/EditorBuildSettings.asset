@@ -12,8 +12,20 @@ EditorBuildSettings:
     path: Assets/UXG2176 A3/Scenes/TestScene_Jeremy.unity
     guid: 3bd23d7d35d000b4f8c21d8b8191bf2f
   - enabled: 1
+    path: Assets/UXG2176 A3/Scenes/TestScene_Shan.unity
+    guid: d6c5490f267851843ab7c0f61812000f
+  - enabled: 1
     path: Assets/UXG2176 A3/Scenes/TestScene_Kyde.unity
     guid: 71836fb8f946b024ea8242e4fdd5ed03
+  - enabled: 1
+    path: Assets/UXG2176 A3/Scenes/TestScene_Sab.unity
+    guid: f72de7707dbaeb24ba6339c2fdb22917
+  - enabled: 1
+    path: Assets/UXG2176 A3/Scenes/TestScene_Sirui.unity
+    guid: 42101949db8cdb4418f6696f31cb2700
+  - enabled: 1
+    path: Assets/UXG2176 A3/Scenes/LevelComplete.unity
+    guid: 11483d48795ea3f438a5e5ceabaa3152
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

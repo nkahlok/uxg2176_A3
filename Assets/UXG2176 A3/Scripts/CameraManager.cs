@@ -97,7 +97,7 @@ public class CameraManager : MonoBehaviour
         return right;
     }
 
-     public int GetCCTVCameraCount()
+    public int GetCCTVCameraCount()
     {
         if (cctvVirtualCams == null)
         {

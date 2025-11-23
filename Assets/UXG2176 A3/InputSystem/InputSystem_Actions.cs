@@ -436,6 +436,94 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""CCTV"",
+            ""id"": ""6e1ed11e-962c-4932-afa4-763dea83410b"",
+            ""actions"": [
+                {
+                    ""name"": ""CycleLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""d7f42f3c-52fa-4510-b459-41b22d5cccfe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CycleRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""a875f96f-9ef1-4d22-97e0-51e16e3232e7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Return"",
+                    ""type"": ""Button"",
+                    ""id"": ""256fe024-7ebf-43c6-a77d-6552505f3313"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""d646b861-790e-42d2-926f-1c27dac181d5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ed317a9f-49cd-4ac3-a556-a97729bc6690"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee78b6da-e64f-48b0-b92c-73309efd4123"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""CycleRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b0747b0a-8ce3-4adb-8540-722d8f97320f"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Return"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10b8dd51-8c6c-4f20-97ca-072fd9fd246c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -521,6 +609,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Keypad_Click = m_Keypad.FindAction("Click", throwIfNotFound: true);
         m_Keypad_Return = m_Keypad.FindAction("Return", throwIfNotFound: true);
         m_Keypad_Pause = m_Keypad.FindAction("Pause", throwIfNotFound: true);
+        // CCTV
+        m_CCTV = asset.FindActionMap("CCTV", throwIfNotFound: true);
+        m_CCTV_CycleLeft = m_CCTV.FindAction("CycleLeft", throwIfNotFound: true);
+        m_CCTV_CycleRight = m_CCTV.FindAction("CycleRight", throwIfNotFound: true);
+        m_CCTV_Return = m_CCTV.FindAction("Return", throwIfNotFound: true);
+        m_CCTV_Pause = m_CCTV.FindAction("Pause", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -528,6 +622,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Drone.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Drone.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Keypad.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Keypad.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CCTV.enabled, "This will cause a leak and performance issues, InputSystem_Actions.CCTV.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -811,6 +906,76 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         }
     }
     public KeypadActions @Keypad => new KeypadActions(this);
+
+    // CCTV
+    private readonly InputActionMap m_CCTV;
+    private List<ICCTVActions> m_CCTVActionsCallbackInterfaces = new List<ICCTVActions>();
+    private readonly InputAction m_CCTV_CycleLeft;
+    private readonly InputAction m_CCTV_CycleRight;
+    private readonly InputAction m_CCTV_Return;
+    private readonly InputAction m_CCTV_Pause;
+    public struct CCTVActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+        public CCTVActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CycleLeft => m_Wrapper.m_CCTV_CycleLeft;
+        public InputAction @CycleRight => m_Wrapper.m_CCTV_CycleRight;
+        public InputAction @Return => m_Wrapper.m_CCTV_Return;
+        public InputAction @Pause => m_Wrapper.m_CCTV_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_CCTV; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CCTVActions set) { return set.Get(); }
+        public void AddCallbacks(ICCTVActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CCTVActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CCTVActionsCallbackInterfaces.Add(instance);
+            @CycleLeft.started += instance.OnCycleLeft;
+            @CycleLeft.performed += instance.OnCycleLeft;
+            @CycleLeft.canceled += instance.OnCycleLeft;
+            @CycleRight.started += instance.OnCycleRight;
+            @CycleRight.performed += instance.OnCycleRight;
+            @CycleRight.canceled += instance.OnCycleRight;
+            @Return.started += instance.OnReturn;
+            @Return.performed += instance.OnReturn;
+            @Return.canceled += instance.OnReturn;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+        }
+
+        private void UnregisterCallbacks(ICCTVActions instance)
+        {
+            @CycleLeft.started -= instance.OnCycleLeft;
+            @CycleLeft.performed -= instance.OnCycleLeft;
+            @CycleLeft.canceled -= instance.OnCycleLeft;
+            @CycleRight.started -= instance.OnCycleRight;
+            @CycleRight.performed -= instance.OnCycleRight;
+            @CycleRight.canceled -= instance.OnCycleRight;
+            @Return.started -= instance.OnReturn;
+            @Return.performed -= instance.OnReturn;
+            @Return.canceled -= instance.OnReturn;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+        }
+
+        public void RemoveCallbacks(ICCTVActions instance)
+        {
+            if (m_Wrapper.m_CCTVActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICCTVActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CCTVActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CCTVActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CCTVActions @CCTV => new CCTVActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -876,6 +1041,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IKeypadActions
     {
         void OnClick(InputAction.CallbackContext context);
+        void OnReturn(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+    }
+    public interface ICCTVActions
+    {
+        void OnCycleLeft(InputAction.CallbackContext context);
+        void OnCycleRight(InputAction.CallbackContext context);
         void OnReturn(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
     }
