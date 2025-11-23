@@ -60,8 +60,7 @@ public class NumberDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void OnDrag(PointerEventData eventData)
     {
-        // Calls the OnDrag event of the Rotary Dial when dragging the number
-        this.gameObject.GetComponentInParent<RotaryDial>().OnDrag(eventData);
+
 
 
     }

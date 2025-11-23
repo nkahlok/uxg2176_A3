@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System.Collections;
 
-public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class RotaryDial : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private RectTransform dialTransform;
     [SerializeField] private float rotationSpeed = 1f;
     [SerializeField] private float returnSpeed = 5f; // Speed of return animation
 
-    private bool isDragging = false; // Boolean for when dragging the rotary dial
-    private Vector2 centerPoint; // Center of the screen space
-    private float previousAngle; // The initial angle from which the mouse down position is pressed
-    private float currentRotation;
-    private float originalRotation;
+    private bool isDragging = false;
+    private Vector2 centerPoint;
+    private float previousAngle;
+    private float currentRotation = 0f;
+    private float originalRotation = 0f;
+    private Coroutine returnCoroutine;
+    private Canvas canvas;
 
 
 
@@ -25,30 +28,45 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         originalRotation = dialTransform.rotation.eulerAngles.z;
         currentRotation = originalRotation;
 
-       
+        // Get the canvas for proper screen point conversion
+        canvas = GetComponentInParent<Canvas>();
+    }
+
+    void Update()
+    {
+        if (isDragging)
+        {
+            UpdateRotation();
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         isDragging = true;
 
-        // Stops the coroutine if pointer down on the dial
-        StopCoroutine(ReturnToOriginalRotation());
+        // Stop any ongoing return animation
+        if (returnCoroutine != null)
+        {
+            StopCoroutine(returnCoroutine);
+            returnCoroutine = null;
+        }
 
         // Get center point in screen space
-        centerPoint = RectTransformUtility.WorldToScreenPoint(eventData.pressEventCamera, dialTransform.position);
+        Camera cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+        centerPoint = RectTransformUtility.WorldToScreenPoint(cam, dialTransform.position);
 
         // Calculate initial angle
         Vector2 direction = eventData.position - centerPoint;
         previousAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
     }
 
-    public void OnDrag(PointerEventData eventData)
+    private void UpdateRotation()
     {
-        if (!isDragging) return;
+        // Get current mouse position
+        Vector2 mousePos = Input.mousePosition;
 
         // Calculate current angle from center to mouse position
-        Vector2 direction = eventData.position - centerPoint;
+        Vector2 direction = mousePos - centerPoint;
         float currentAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         // Calculate angle difference
@@ -57,11 +75,12 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         // Apply rotation
         currentRotation += angleDelta * rotationSpeed;
 
+  
 
         // Update the rotation visually
         dialTransform.rotation = Quaternion.Euler(0, 0, currentRotation);
 
-        // Store current angle for next frame
+        // Store current angle for next frame of the rotation
         previousAngle = currentAngle;
     }
 
@@ -69,8 +88,8 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     {
         isDragging = false;
 
-        // Start coroutine to return to original rotation once we let go
-        StartCoroutine(ReturnToOriginalRotation());
+        // Start returning to original rotation
+        returnCoroutine = StartCoroutine(ReturnToOriginalRotation());
     }
 
     private IEnumerator ReturnToOriginalRotation()
@@ -86,7 +105,8 @@ public class RotaryDial : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         // Snap to exact original rotation just incase
         currentRotation = originalRotation;
         dialTransform.rotation = Quaternion.Euler(0, 0, currentRotation);
-        
+        returnCoroutine = null;
     }
+
 
 }
