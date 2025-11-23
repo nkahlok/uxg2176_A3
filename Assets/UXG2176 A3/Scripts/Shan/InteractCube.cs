@@ -25,6 +25,7 @@ public class InteractCube : MonoBehaviour
 
     void Update()
     {
+        // If within distance radius and e is pressed
         if (Vector3.Distance(player.position, transform.position) <= detectionRadius)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -32,6 +33,7 @@ public class InteractCube : MonoBehaviour
                 // Play sfx
                 interactSfx.Play();
 
+                // Toggle materials of the cube
                 ToggleMaterial();
             }
         }

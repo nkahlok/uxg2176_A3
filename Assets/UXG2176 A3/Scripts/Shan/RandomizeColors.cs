@@ -10,10 +10,6 @@ public class RandomizeColors : MonoBehaviour
 
     private Color[] colorOptions;
 
-    private void Awake()
-    {
-
-    }
     void Start()
     {
         // Store colors in an array for easier random picking

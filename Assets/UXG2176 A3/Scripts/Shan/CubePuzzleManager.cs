@@ -4,14 +4,22 @@ public class CubePuzzleManager : MonoBehaviour
 {
     public static CubePuzzleManager instance;
 
-    [SerializeField] private int[] imageColors = new int[3]; // randomized colors
-    [SerializeField] private int[] cubeColors = new int[3];  // cube materials
+    [SerializeField] private int[] imageColors = new int[3]; // Randomized colors
+    [SerializeField] private int[] cubeColors = new int[3];  // Cube materials
     [SerializeField] private AudioSource puzzleUnlockSfx;
+    [SerializeField] private GameObject colorObj;
+    [SerializeField] private GameObject colorTxt;
+    [SerializeField] private GameObject objectiveTxt;
+    [SerializeField] private GameObject exitObjTxt;
+    [SerializeField] private GameObject exitObj;
 
     private bool isPuzzleInit;
     void Awake()
     {
         instance = this;
+
+        exitObj.SetActive(false);
+        exitObjTxt.SetActive(false);
     }
 
     public void UpdateImageColor(int index, int colorIndex)
@@ -28,8 +36,10 @@ public class CubePuzzleManager : MonoBehaviour
 
     void CheckForMatch()
     {
+        // If has not randomize colors, return
         if (!isPuzzleInit) return;
 
+        // If colors mismatch, return
         for (int i = 0; i < 3; i++)
         {
             if (cubeColors[i] != imageColors[i])
@@ -40,7 +50,16 @@ public class CubePuzzleManager : MonoBehaviour
         // Play unlock sfx
         puzzleUnlockSfx.Play();
 
-        // Idk some lvl next mechanism or door opening here
+        // Set exit txt active
+        exitObjTxt.SetActive(true);
+
+        // Set other txts false
+        objectiveTxt.SetActive(false);
+        colorTxt.SetActive(false);
+        colorObj.SetActive(false);
+
+        // Set exit active
+        exitObj.SetActive(true);
     }
 
     public void StartPuzzleInit()
