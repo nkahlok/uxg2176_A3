@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class RotateSwitch : MonoBehaviour
@@ -13,7 +14,7 @@ public class RotateSwitch : MonoBehaviour
     
     [Header("Refs")]
     [SerializeField] private Transform objectToRotate;
-    [SerializeField] private GameObject interactText;
+    [SerializeField] private TMP_Text interactText;
     [SerializeField] private List<GameObject> platforms;
     [SerializeField] private List<GameObject> platformsColliders;
     [SerializeField] private List<GameObject> switchList;
@@ -24,14 +25,14 @@ public class RotateSwitch : MonoBehaviour
     private Quaternion targetRotation;
     private void Start()
     {
-        interactText.SetActive(false);
+        interactText.alpha = 0f;
 
         foreach(GameObject col in platformsColliders)
             col.SetActive(false);
     }
     void Update()
     {
-        interactText.SetActive(true);
+        interactText.alpha = 1f;
         if (IsNearSwitch())
         {
             // Player presses e to interact
@@ -48,7 +49,7 @@ public class RotateSwitch : MonoBehaviour
         }
         else
         {
-            interactText.SetActive(false);
+            interactText.alpha = 0f;
         }
 
         // Smooth rotation

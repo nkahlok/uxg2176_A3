@@ -111,7 +111,7 @@ public class CameraManager : MonoBehaviour
     {
         // reset all virtual cam priority
         playerVirtualCam.Priority.Value = 0;
-        droneVirtualCam.Priority.Value = 0;
+        if (droneVirtualCam != null) droneVirtualCam.Priority.Value = 0;
         foreach (CinemachineCamera cam in cctvVirtualCams)
         {
             cam.Priority.Value = 0;
