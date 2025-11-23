@@ -33,6 +33,13 @@ public class NightVisionController : MonoBehaviour
         {
             isNightVisionOn = false;
             nightVisionVolume.weight = isNightVisionOn ? 1 : 0;
+
+            // Turn on clues when it is in night vision
+            foreach (GameObject clues in nightVisionClues)
+            {
+                clues.SetActive(false);
+            }
+
         }
         else if (Player.Instance.playerState == Player.PlayerState.DRONE)
         {
