@@ -734,8 +734,9 @@ GameObject:
   - component: {fileID: 73560525}
   - component: {fileID: 73560524}
   - component: {fileID: 73560523}
+  - component: {fileID: 73560526}
   m_Layer: 0
-  m_Name: Floor (2)
+  m_Name: LevelSwitcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -830,6 +831,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 73560521}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &73560526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73560521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0481d3f2d1ed8af428722f98ef74cf51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &81421515
 GameObject:
   m_ObjectHideFlags: 0
@@ -11162,7 +11175,6 @@ Transform:
   m_Children:
   - {fileID: 1466012462}
   - {fileID: 769997515}
-  - {fileID: 73560522}
   - {fileID: 420085327}
   - {fileID: 2049026863}
   - {fileID: 554034303}
@@ -11177,6 +11189,7 @@ Transform:
   - {fileID: 386401598}
   - {fileID: 950179956}
   - {fileID: 1447364592}
+  - {fileID: 73560522}
   m_Father: {fileID: 3952495977016809479}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2124109190

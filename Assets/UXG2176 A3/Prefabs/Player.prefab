@@ -785,6 +785,7 @@ GameObject:
   - component: {fileID: 9063215443834540821}
   - component: {fileID: 713763097784839234}
   - component: {fileID: 1698865454432692964}
+  - component: {fileID: 4263908281506369526}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -866,7 +867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerState: 100
-  spawnDelayDuration: 2
+  spawnDelayDuration: 0.1
   pauseCanvas: {fileID: 1817174875639223927}
   playerCanvas: {fileID: 6306015494644307515}
   droneCanvas: {fileID: 0}
@@ -901,6 +902,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   interactText: {fileID: 6403691669234872041}
+--- !u!81 &4263908281506369526
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096519695974928228}
+  m_Enabled: 1
 --- !u!1 &6163828581140837482
 GameObject:
   m_ObjectHideFlags: 0
