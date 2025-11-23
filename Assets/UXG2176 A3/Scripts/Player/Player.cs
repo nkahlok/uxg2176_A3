@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] float spawnDelayDuration = 2f;
     float spawnDelayTimer = 0f;
     bool hasSpawned = false;
+    private int currentCCTVIndex = 0;
 
     [SerializeField] Canvas playerCanvas;
     [SerializeField] Canvas droneCanvas;
@@ -56,7 +57,15 @@ public class Player : MonoBehaviour
             }
             else if (Input.GetKeyUp(KeyCode.Alpha2))
             {
-                //SwitchMode(PlayerState.CCTV);
+                if (playerState == PlayerState.CCTV)
+                {
+                    CycleCCTVCamera();
+                }
+                else
+                {
+                    currentCCTVIndex = 0;
+                    SwitchMode(PlayerState.CCTV);
+                }
             }
             else if (Input.GetKeyUp(KeyCode.Alpha3))
             {
@@ -77,6 +86,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void CycleCCTVCamera()
+    {
+        currentCCTVIndex++;
+
+        int numCCTVCameras = CameraManager.Instance.GetCCTVCameraCount();
+        
+        if (currentCCTVIndex >= numCCTVCameras)
+        {
+            currentCCTVIndex = 0;
+        }
+        
+        CameraManager.Instance.SetCameraMode(currentCCTVIndex);
+    }
+
     public void SwitchMode(PlayerState playerState)
     {
         // switches player state
@@ -86,7 +109,14 @@ public class Player : MonoBehaviour
         gameInput.SwitchInputMode();
 
         // switch camera
-        CameraManager.Instance.SetCameraMode();
+        if (playerState == PlayerState.CCTV)
+        {
+            CameraManager.Instance.SetCameraMode(currentCCTVIndex);
+        }
+        else
+        {
+            CameraManager.Instance.SetCameraMode();
+        }
 
         // switch UI
         playerCanvas.enabled = false;
@@ -99,6 +129,9 @@ public class Player : MonoBehaviour
 
             case PlayerState.DRONE:
                 droneCanvas.enabled = true;
+                break;
+
+            case PlayerState.CCTV:
                 break;
 
             default:

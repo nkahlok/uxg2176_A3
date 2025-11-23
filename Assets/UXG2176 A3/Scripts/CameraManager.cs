@@ -107,6 +107,16 @@ public class CameraManager : MonoBehaviour
         return right;
     }
 
+     public int GetCCTVCameraCount()
+    {
+        if (cctvVirtualCams == null)
+        {
+            return 0;
+        }
+        return cctvVirtualCams.Length;
+    }
+
+
     public void SetCameraMode(int cctvVirtualCamIndex = 0)
     {
         // reset all virtual cam priority
@@ -132,9 +142,17 @@ public class CameraManager : MonoBehaviour
                 break;
 
             case Player.PlayerState.CCTV:
-                cctvVirtualCams[cctvVirtualCamIndex].Priority.Value = 10;
-                InitialiseCamera();
+                if (cctvVirtualCams != null && cctvVirtualCams.Length > 0 && cctvVirtualCamIndex < cctvVirtualCams.Length)
+                {
+                    cctvVirtualCams[cctvVirtualCamIndex].Priority.Value = 10;
+                    InitialiseCamera();
+                }
+                else
+                {
+                    Debug.LogWarning("CCTV cameras not set up or index out of range!");
+                }
                 break;
+
 
             default:
                 break;
