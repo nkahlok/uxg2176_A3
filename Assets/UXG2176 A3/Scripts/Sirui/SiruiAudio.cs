@@ -34,7 +34,7 @@ public class LaserPuzzleAudioManager : MonoBehaviour
     [SerializeField] private bool playBGMOnStart = true;
     [SerializeField] private float bgmFadeInDuration = 2f;
 
-    [Header("Audio Sources")]
+    [Header("Audio Sources (optional - can be assigned in Inspector)")]
     [SerializeField] private AudioSource sfxAudioSource;
     [SerializeField] private AudioSource laserLoopAudioSource;
     [SerializeField] private AudioSource receiverLoopAudioSource;
@@ -45,20 +45,29 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        else
+
+        Instance = this;
+
+        // Ensure audio sources are ready before other Start() calls run
+        SetupAudioSources();
+
+        // Warn about multiple audio listeners in the scene (helpful for debugging)
+        var listeners = FindObjectsOfType<AudioListener>();
+        if (listeners.Length > 1)
         {
-            Instance = this;
+            Debug.LogWarning($"[LaserPuzzleAudioManager] Found {listeners.Length} AudioListener(s) in scene. " +
+                "Unity expects a single AudioListener (usually on the Main Camera). Remove or disable extras to avoid audio issues.");
         }
     }
 
     private void Start()
     {
-        SetupAudioSources();
-        
         if (playBGMOnStart && levelBGM != null)
         {
             PlayBGM();
@@ -67,12 +76,12 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     private void Update()
     {
-        if (isFadingIn && bgmFadeTimer < bgmFadeInDuration)
+        if (isFadingIn && bgmFadeTimer < bgmFadeInDuration && bgmAudioSource != null)
         {
             bgmFadeTimer += Time.deltaTime;
             float fadeProgress = bgmFadeTimer / bgmFadeInDuration;
             bgmAudioSource.volume = Mathf.Lerp(0f, bgmVolume, fadeProgress);
-            
+
             if (bgmFadeTimer >= bgmFadeInDuration)
             {
                 bgmAudioSource.volume = bgmVolume;
@@ -118,7 +127,7 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void PlayMirrorRotate()
     {
-        if (mirrorRotateSound != null)
+        if (mirrorRotateSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(mirrorRotateSound, mirrorRotateVolume);
         }
@@ -126,7 +135,13 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void PlayLaserHum()
     {
-        if (laserHumSound != null && !laserLoopAudioSource.isPlaying)
+        // Ensure audio source exists
+        if (laserLoopAudioSource == null)
+        {
+            SetupAudioSources();
+        }
+
+        if (laserHumSound != null && laserLoopAudioSource != null && !laserLoopAudioSource.isPlaying)
         {
             laserLoopAudioSource.clip = laserHumSound;
             laserLoopAudioSource.volume = laserHumVolume;
@@ -136,28 +151,36 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void StopLaserHum()
     {
-        if (laserLoopAudioSource.isPlaying)
+        if (laserLoopAudioSource != null && laserLoopAudioSource.isPlaying)
         {
             laserLoopAudioSource.Stop();
         }
     }
+
     public void PlayLaserReflect()
     {
-        if (laserReflectSound != null)
+        if (laserReflectSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(laserReflectSound, laserReflectVolume);
         }
     }
+
     public void PlayReceiverHit()
     {
-        if (receiverHitSound != null)
+        if (receiverHitSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(receiverHitSound, receiverHitVolume);
         }
     }
+
     public void PlayReceiverCharging()
     {
-        if (receiverChargeSound != null && !receiverLoopAudioSource.isPlaying)
+        if (receiverLoopAudioSource == null)
+        {
+            SetupAudioSources();
+        }
+
+        if (receiverChargeSound != null && receiverLoopAudioSource != null && !receiverLoopAudioSource.isPlaying)
         {
             receiverLoopAudioSource.clip = receiverChargeSound;
             receiverLoopAudioSource.volume = receiverChargeVolume;
@@ -167,7 +190,7 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void StopReceiverCharging()
     {
-        if (receiverLoopAudioSource.isPlaying)
+        if (receiverLoopAudioSource != null && receiverLoopAudioSource.isPlaying)
         {
             receiverLoopAudioSource.Stop();
         }
@@ -175,14 +198,15 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void PlayDoorOpen()
     {
-        if (doorOpenSound != null)
+        if (doorOpenSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(doorOpenSound, doorOpenVolume);
         }
     }
+
     public void PlaySuccess()
     {
-        if (successSound != null)
+        if (successSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(successSound, successVolume);
         }
@@ -190,14 +214,15 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void PlayError()
     {
-        if (errorSound != null)
+        if (errorSound != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(errorSound, errorVolume);
         }
     }
+
     public void PlayClip(AudioClip clip, float volume = 1f)
     {
-        if (clip != null)
+        if (clip != null && sfxAudioSource != null)
         {
             sfxAudioSource.PlayOneShot(clip, volume);
         }
@@ -205,35 +230,46 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     public void PlayBGM()
     {
-        if (levelBGM != null && bgmAudioSource != null)
+        if (levelBGM != null)
         {
-            bgmAudioSource.clip = levelBGM;
-            bgmAudioSource.volume = 0f;
-            bgmAudioSource.Play();
-            
-            // Start fade in
-            bgmFadeTimer = 0f;
-            isFadingIn = true;
+            if (bgmAudioSource == null) SetupAudioSources();
+
+            if (bgmAudioSource != null)
+            {
+                bgmAudioSource.clip = levelBGM;
+                bgmAudioSource.volume = 0f;
+                bgmAudioSource.Play();
+
+                // Start fade in
+                bgmFadeTimer = 0f;
+                isFadingIn = true;
+            }
         }
     }
 
     public void PlayBGM(AudioClip clip, float volume)
     {
-        if (clip != null && bgmAudioSource != null)
+        if (clip != null)
         {
+            if (bgmAudioSource == null) SetupAudioSources();
+
             StopBGM();
-            
+
             levelBGM = clip;
             bgmVolume = volume;
-            bgmAudioSource.clip = clip;
-            bgmAudioSource.volume = 0f;
-            bgmAudioSource.Play();
-            
-            // Start fade in
-            bgmFadeTimer = 0f;
-            isFadingIn = true;
+            if (bgmAudioSource != null)
+            {
+                bgmAudioSource.clip = clip;
+                bgmAudioSource.volume = 0f;
+                bgmAudioSource.Play();
+
+                // Start fade in
+                bgmFadeTimer = 0f;
+                isFadingIn = true;
+            }
         }
     }
+
     public void StopBGM()
     {
         if (bgmAudioSource != null && bgmAudioSource.isPlaying)
@@ -253,18 +289,24 @@ public class LaserPuzzleAudioManager : MonoBehaviour
 
     private System.Collections.IEnumerator FadeOutCoroutine(float duration)
     {
-        float startVolume = bgmAudioSource.volume;
+        float startVolume = bgmAudioSource != null ? bgmAudioSource.volume : 0f;
         float timer = 0f;
 
         while (timer < duration)
         {
             timer += Time.deltaTime;
-            bgmAudioSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            if (bgmAudioSource != null)
+            {
+                bgmAudioSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            }
             yield return null;
         }
 
-        bgmAudioSource.volume = 0f;
-        bgmAudioSource.Stop();
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.volume = 0f;
+            bgmAudioSource.Stop();
+        }
     }
 
     public void PauseBGM()
@@ -274,6 +316,7 @@ public class LaserPuzzleAudioManager : MonoBehaviour
             bgmAudioSource.Pause();
         }
     }
+
     public void ResumeBGM()
     {
         if (bgmAudioSource != null)
