@@ -7,42 +7,41 @@ public class InteractCube : MonoBehaviour
     [SerializeField] private float detectionRadius = 3f;
 
     [Header("Materials")]
-    [SerializeField] private Material[] materials; 
+    [SerializeField] private Material[] materials;
+
+    [SerializeField] private int cubeIndex; // ID of this cube (0,1,2)
 
     private Renderer rend;
     private int currentIndex = 0;
-
-    [SerializeField] private int cubeIndex;
 
     void Start()
     {
         rend = GetComponent<Renderer>();
         rend.material = materials[currentIndex];
 
-        CubePuzzleManager.instance.UpdateCubeColor(cubeIndex,rend.material.color);
+        // Send initial color index
+        CubePuzzleManager.instance.UpdateCubeColor(cubeIndex, currentIndex);
     }
 
     void Update()
     {
-        float distance = Vector3.Distance(player.position, transform.position);
-
-        if (distance <= detectionRadius)
+        if (Vector3.Distance(player.position, transform.position) <= detectionRadius)
         {
             if (Input.GetKeyDown(KeyCode.E))
+            {
                 ToggleMaterial();
+            }
         }
     }
 
     void ToggleMaterial()
     {
-        currentIndex++;
-
-        if (currentIndex >= materials.Length)
-            currentIndex = 0;
+        currentIndex = (currentIndex + 1) % materials.Length;
 
         rend.material = materials[currentIndex];
 
-        CubePuzzleManager.instance.UpdateCubeColor(cubeIndex, rend.material.color);
+        // Send updated color index
+        CubePuzzleManager.instance.UpdateCubeColor(cubeIndex, currentIndex);
     }
 
     private void OnDrawGizmosSelected()

@@ -18,22 +18,14 @@ public class RandomizeColors : MonoBehaviour
         RandomizeColor();
     }
 
-    //public void RandomizeColor()
-    //{
-    //    foreach (Image img in images)
-    //    {
-    //        img.color = colorOptions[Random.Range(0, colorOptions.Length)];
-    //    }
-    //}
-
     public void RandomizeColor()
     {
         for (int i = 0; i < images.Length; i++)
         {
-            Color newColor = colorOptions[Random.Range(0, colorOptions.Length)];
-            images[i].color = newColor;
+            int colorIndex = Random.Range(0, colorOptions.Length);
+            images[i].color = colorOptions[colorIndex];
 
-            CubePuzzleManager.instance.UpdateImageColor(i, newColor);
+            CubePuzzleManager.instance.UpdateImageColor(i, colorIndex);
         }
     }
 }

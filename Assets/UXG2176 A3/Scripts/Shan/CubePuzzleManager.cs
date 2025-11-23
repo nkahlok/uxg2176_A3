@@ -4,23 +4,23 @@ public class CubePuzzleManager : MonoBehaviour
 {
     public static CubePuzzleManager instance;
 
-    private Color[] imageColors = new Color[3]; // randomized colors
-    private Color[] cubeColors = new Color[3];  // cube materials
+    [SerializeField] private int[] imageColors = new int[3]; // randomized colors
+    [SerializeField] private int[] cubeColors = new int[3];  // cube materials
 
     void Awake()
     {
         instance = this;
     }
 
-    public void UpdateImageColor(int index, Color newColor)
+    public void UpdateImageColor(int index, int colorIndex)
     {
-        imageColors[index] = newColor;
+        imageColors[index] = colorIndex;
         CheckForMatch();
     }
 
-    public void UpdateCubeColor(int index, Color newColor)
+    public void UpdateCubeColor(int index, int colorIndex)
     {
-        cubeColors[index] = newColor;
+        cubeColors[index] = colorIndex;
         CheckForMatch();
     }
 
@@ -32,6 +32,6 @@ public class CubePuzzleManager : MonoBehaviour
                 return;
         }
 
-        Debug.Log("UNLOCK!");
+        Debug.Log("Unlock!");
     }
 }
