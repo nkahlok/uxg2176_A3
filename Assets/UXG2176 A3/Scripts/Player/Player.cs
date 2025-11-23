@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
         CCTV,
         DRONE,
 
+        KEYPAD,
+
         TRANSITION = 100,
     };
 
@@ -23,6 +25,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] Canvas playerCanvas;
     [SerializeField] Canvas droneCanvas;
+    [SerializeField] Canvas keypadCanvas;
 
     private void Awake()
     {
@@ -121,17 +124,22 @@ public class Player : MonoBehaviour
         // switch UI
         playerCanvas.enabled = false;
         droneCanvas.enabled = false;
+        keypadCanvas.enabled = false;
         switch (playerState)
         {
             case PlayerState.PLAYER:
                 playerCanvas.enabled = true;
                 break;
 
+            case PlayerState.CCTV:
+                break;
+
             case PlayerState.DRONE:
                 droneCanvas.enabled = true;
                 break;
 
-            case PlayerState.CCTV:
+            case PlayerState.KEYPAD:
+                keypadCanvas.enabled = true;
                 break;
 
             default:

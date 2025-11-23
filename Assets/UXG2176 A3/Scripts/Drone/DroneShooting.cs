@@ -51,16 +51,19 @@ public class DroneShooting : MonoBehaviour
 
     private void GameInput_OnDroneShootAction(object sender, System.EventArgs e)
     {
-        if (numBullets > 0)
+        if (!isReloading)
         {
-            Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.LookRotation(targetDir));
-            bulletWheelImages[maxBullets - numBullets].enabled = false;
-            numBullets--;
-
-            if (numBullets == 0)
+            if (numBullets > 0)
             {
-                reloadTimer = reloadDuration;
-                isReloading = true;
+                Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.LookRotation(targetDir));
+                bulletWheelImages[maxBullets - numBullets].enabled = false;
+                numBullets--;
+
+                if (numBullets == 0)
+                {
+                    reloadTimer = reloadDuration;
+                    isReloading = true;
+                }
             }
         }
     }

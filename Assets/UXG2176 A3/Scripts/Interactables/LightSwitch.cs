@@ -8,12 +8,12 @@ public class LightSwitch : Interactable
     {
         GetComponentInParent<LightSwitchManager>().DeactivateAllSwitches();
         spotlight.enabled = true;
-        base.Activate();
+        isActivated = true;
     }
 
     public override void Deactivate()
     {
         spotlight.enabled = false;
-        base.Deactivate();
+        isActivated = false;
     }
 }

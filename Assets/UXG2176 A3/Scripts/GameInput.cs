@@ -9,6 +9,7 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnPlayerInteractAction;
     public event EventHandler OnDroneShootAction;
     public event EventHandler OnDroneReloadAction;
+    public event EventHandler OnDroneReturnAction;
 
     [SerializeField] float horizMouseSens = 1f;
     [SerializeField] float vertMouseSens = 1f;
@@ -24,6 +25,7 @@ public class GameInput : MonoBehaviour
         inputActions.Drone.Enable();
         inputActions.Drone.Attack.performed += DroneAttack_performed;
         inputActions.Drone.Reload.performed += DroneReload_performed;
+        inputActions.Drone.Return.performed += DroneReturn_performed;
 
         // disable all maps
         Cursor.lockState = CursorLockMode.Locked;
@@ -54,6 +56,9 @@ public class GameInput : MonoBehaviour
 
             case Player.PlayerState.DRONE:
                 inputActions.Drone.Enable();
+                break;
+
+            case Player.PlayerState.KEYPAD:
                 break;
 
             default:
@@ -117,5 +122,10 @@ public class GameInput : MonoBehaviour
     private void DroneReload_performed(InputAction.CallbackContext obj)
     {
         OnDroneReloadAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void DroneReturn_performed(InputAction.CallbackContext obj)
+    {
+        OnDroneReturnAction?.Invoke(this, EventArgs.Empty);
     }
 }

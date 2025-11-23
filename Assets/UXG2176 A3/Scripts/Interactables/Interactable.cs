@@ -2,24 +2,17 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public bool isPlayerWithinRange { get; private set; } = false;
-    bool isActivated = false;
+    protected bool isActivated = false;
     
-    public virtual void Activate()
-    {
-        isActivated = true;
-    }
+    public virtual void Activate() {}
 
-    public virtual void Deactivate()
-    {
-        isActivated = false;
-    }
+    public virtual void Deactivate() {}
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
-            isPlayerWithinRange = true;
+            Player.Instance.GetComponent<PlayerInteraction>().SetIsPlayerWithinInteractionRange(true);
         }
         else if (other.tag == "Projectile")
         {
@@ -40,7 +33,7 @@ public class Interactable : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            isPlayerWithinRange = false;
+            Player.Instance.GetComponent<PlayerInteraction>().SetIsPlayerWithinInteractionRange(false);
         }
     }
 }

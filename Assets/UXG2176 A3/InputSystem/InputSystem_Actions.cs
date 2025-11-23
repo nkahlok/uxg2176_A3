@@ -60,7 +60,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""id"": ""852140f2-7766-474d-8707-702459ba45f3"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 }
             ],
@@ -194,6 +194,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Return"",
+                    ""type"": ""Button"",
+                    ""id"": ""7c49b714-5374-4080-b097-ee080a3f0a51"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -304,6 +313,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""67d9ed76-bbbc-4042-87d7-c1d1f4ff0af2"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Return"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -901,6 +921,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Drone_Look = m_Drone.FindAction("Look", throwIfNotFound: true);
         m_Drone_Attack = m_Drone.FindAction("Attack", throwIfNotFound: true);
         m_Drone_Reload = m_Drone.FindAction("Reload", throwIfNotFound: true);
+        m_Drone_Return = m_Drone.FindAction("Return", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1055,6 +1076,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Drone_Look;
     private readonly InputAction m_Drone_Attack;
     private readonly InputAction m_Drone_Reload;
+    private readonly InputAction m_Drone_Return;
     public struct DroneActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1063,6 +1085,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Drone_Look;
         public InputAction @Attack => m_Wrapper.m_Drone_Attack;
         public InputAction @Reload => m_Wrapper.m_Drone_Reload;
+        public InputAction @Return => m_Wrapper.m_Drone_Return;
         public InputActionMap Get() { return m_Wrapper.m_Drone; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1084,6 +1107,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @Return.started += instance.OnReturn;
+            @Return.performed += instance.OnReturn;
+            @Return.canceled += instance.OnReturn;
         }
 
         private void UnregisterCallbacks(IDroneActions instance)
@@ -1100,6 +1126,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @Return.started -= instance.OnReturn;
+            @Return.performed -= instance.OnReturn;
+            @Return.canceled -= instance.OnReturn;
         }
 
         public void RemoveCallbacks(IDroneActions instance)
@@ -1293,6 +1322,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnReturn(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
