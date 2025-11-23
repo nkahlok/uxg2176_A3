@@ -1,19 +1,17 @@
-using UnityEngine;
-
 public class KeypadPanel : Interactable
 {
-    //[SerializeField] Keypad keypad;
+    Keypad keypad;
 
-    //public override void Activate()
-    //{
-    //    GetComponentInParent<LightSwitchManager>().DeactivateAllSwitches();
-    //    spotlight.enabled = true;
-    //    base.Activate();
-    //}
+    private void Start()
+    {
+        keypad = transform.GetChild(0).GetComponent<Keypad>();
+    }
 
-    //public override void Deactivate()
-    //{
-    //    spotlight.enabled = false;
-    //    base.Deactivate();
-    //}
+    public override void Activate()
+    {
+        if (!keypad.isUnlocked)
+        {
+            Player.Instance.SwitchMode(Player.PlayerState.KEYPAD);
+        }
+    }
 }

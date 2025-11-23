@@ -6,8 +6,11 @@ public class Keypad : MonoBehaviour
 {
     [SerializeField] string unlockCode;
     string enteredCode;
+    [HideInInspector] public bool isUnlocked = false;
 
     [SerializeField] TMP_Text displayText;
+
+    [SerializeField] GameObject door;
 
     [Serializable]
     public enum ButtonType
@@ -29,6 +32,7 @@ public class Keypad : MonoBehaviour
     private void Start()
     {
         displayText.text = string.Empty;
+        enteredCode = string.Empty;
     }
 
     public void ButtonClick(KeypadButtons button)
@@ -101,6 +105,11 @@ public class Keypad : MonoBehaviour
 
     private void UnlockPuzzle()
     {
+        door.SetActive(false);
+        enteredCode = string.Empty;
+        displayText.text = enteredCode;
+        isUnlocked = true;
 
+        Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
     }
 }

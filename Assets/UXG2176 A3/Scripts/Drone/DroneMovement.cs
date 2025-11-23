@@ -1,5 +1,4 @@
 using UnityEngine;
-using static Player;
 
 public class DroneMovement : MonoBehaviour
 {
@@ -25,7 +24,7 @@ public class DroneMovement : MonoBehaviour
 
     private void GameInput_OnDroneReturnAction(object sender, System.EventArgs e)
     {
-        Player.Instance.SwitchMode(PlayerState.PLAYER);
+        Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
     }
 
     private void LateUpdate()

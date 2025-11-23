@@ -46,7 +46,14 @@ public class Player : MonoBehaviour
         spawnDelayTimer = spawnDelayDuration;
 
         // disable all UI except player
-        droneCanvas.enabled = false;
+        if (droneCanvas != null)
+        {
+            droneCanvas.enabled = false;
+        }
+        if (keypadCanvas != null)
+        {
+            keypadCanvas.enabled = false;
+        }
     }
 
     private void Update()
@@ -122,26 +129,25 @@ public class Player : MonoBehaviour
         }
 
         // switch UI
-        playerCanvas.enabled = false;
-        droneCanvas.enabled = false;
-        keypadCanvas.enabled = false;
+        if (playerCanvas != null) playerCanvas.enabled = false;
+        if (droneCanvas != null) droneCanvas.enabled = false;
+        if (keypadCanvas != null) keypadCanvas.enabled = false;
+
         switch (playerState)
         {
             case PlayerState.PLAYER:
-                playerCanvas.enabled = true;
-                break;
-
-            case PlayerState.CCTV:
+                if (playerCanvas != null) playerCanvas.enabled = true;
                 break;
 
             case PlayerState.DRONE:
-                droneCanvas.enabled = true;
+                if (droneCanvas != null) droneCanvas.enabled = true;
                 break;
 
             case PlayerState.KEYPAD:
-                keypadCanvas.enabled = true;
+                if (keypadCanvas != null) keypadCanvas.enabled = true;
                 break;
 
+            case PlayerState.CCTV:
             default:
                 break;
         }

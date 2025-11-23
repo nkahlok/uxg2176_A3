@@ -198,6 +198,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!223 &272902507 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 4283062160390417385, guid: 9fc65bdf2247ad842b00f5a470bfe5d9, type: 3}
+  m_PrefabInstance: {fileID: 1592923018}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &309960990
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,11 +310,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 309960992}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!223 &459162124 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 6306015494644307515, guid: ec1b9bfa6d63b8f40b03c90a4c5a16dc, type: 3}
-  m_PrefabInstance: {fileID: 2074694324}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &514879723
 GameObject:
   m_ObjectHideFlags: 0
@@ -3171,7 +3171,7 @@ PrefabInstance:
     - target: {fileID: 9063215443834540821, guid: ec1b9bfa6d63b8f40b03c90a4c5a16dc, type: 3}
       propertyPath: droneCanvas
       value: 
-      objectReference: {fileID: 459162124}
+      objectReference: {fileID: 272902507}
     - target: {fileID: 9063215443834540821, guid: ec1b9bfa6d63b8f40b03c90a4c5a16dc, type: 3}
       propertyPath: keypadCanvas
       value: 

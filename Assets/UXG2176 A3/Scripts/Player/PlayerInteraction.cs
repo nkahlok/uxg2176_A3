@@ -18,7 +18,7 @@ public class PlayerInteraction : MonoBehaviour
         gameInput = GetComponent<GameInput>();
         gameInput.OnPlayerInteractAction += GameInput_OnPlayerInteractAction;
 
-        interactText.enabled = false;
+        interactText.alpha = 0f;
     }
 
     public void SetIsPlayerWithinInteractionRange(bool isPlayerWithinInteractionRange)
@@ -34,25 +34,25 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (isPlayerWithinInteractionRange)
         {
             if (CheckIfLookingAtInteractable())
             {
                 canInteract = true;
-                interactText.enabled = true;
+                interactText.alpha = 1f;
             }
             else
             {
                 canInteract = false;
-                interactText.enabled = false;
+                interactText.alpha = 0f;
             }
         }
         else
         {
             canInteract = false;
-            interactText.enabled = false;
+            interactText.alpha = 0f;
         }
     }
 
