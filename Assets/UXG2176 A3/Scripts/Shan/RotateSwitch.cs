@@ -6,14 +6,19 @@ public class RotateSwitch : MonoBehaviour
     [Header("Player Detection")]
     [SerializeField] private Transform player;
     [SerializeField] private float detectionRadius = 3f; // The radius which player can interact with the switch
+    
+    [Header("Target to Rotate")]
+    [SerializeField] private float rotationAngle = 90f;
+    [SerializeField] private float rotationSpeed = 5f;
+    
+    [Header("Refs")]
+    [SerializeField] private Transform objectToRotate;
     [SerializeField] private GameObject interactText;
     [SerializeField] private List<GameObject> platforms;
     [SerializeField] private List<GameObject> platformsColliders;
     [SerializeField] private List<GameObject> switchList;
-    [Header("Target to Rotate")]
-    [SerializeField] private Transform objectToRotate;
-    [SerializeField] private float rotationAngle = 90f;
-    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private AudioSource platformMoveSFX;
+    [SerializeField] private AudioSource platformSwitchSFX;
 
     private bool isRotating = false;
     private Quaternion targetRotation;
@@ -32,6 +37,9 @@ public class RotateSwitch : MonoBehaviour
             // Player presses e to interact
             if (Input.GetKeyDown(KeyCode.E) && !isRotating)
             {
+                // Play switch sfx
+                platformSwitchSFX.Play();
+
                 // Set all platforms to false
                 foreach (GameObject obj in platforms)
                     obj.SetActive(false);
@@ -62,7 +70,7 @@ public class RotateSwitch : MonoBehaviour
                 // Snap exactly to target
                 objectToRotate.rotation = targetRotation;
                 isRotating = false;
-
+                platformMoveSFX.Stop();
                 // Show platforms now that rotation is done
                 foreach (GameObject obj in platforms)
                     obj.SetActive(true);
@@ -77,6 +85,7 @@ public class RotateSwitch : MonoBehaviour
     void RotateTarget()
     {
         targetRotation = objectToRotate.rotation * Quaternion.Euler(0, rotationAngle, 0);
+        platformMoveSFX.Play();
         isRotating = true;
     }
 

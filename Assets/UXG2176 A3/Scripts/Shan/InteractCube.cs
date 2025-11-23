@@ -9,8 +9,8 @@ public class InteractCube : MonoBehaviour
     [Header("Materials")]
     [SerializeField] private Material[] materials;
 
-    [SerializeField] private int cubeIndex; // ID of this cube (0,1,2)
-
+    [SerializeField] private int cubeIndex; // id of cubes in order is 0,1,2
+    [SerializeField] private AudioSource interactSfx;
     private Renderer rend;
     private int currentIndex = 0;
 
@@ -29,6 +29,9 @@ public class InteractCube : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
+                // Play sfx
+                interactSfx.Play();
+
                 ToggleMaterial();
             }
         }
@@ -36,6 +39,7 @@ public class InteractCube : MonoBehaviour
 
     void ToggleMaterial()
     {
+        // Switch between 3 of the materials
         currentIndex = (currentIndex + 1) % materials.Length;
 
         rend.material = materials[currentIndex];

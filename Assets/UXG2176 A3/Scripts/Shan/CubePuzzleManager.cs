@@ -6,7 +6,9 @@ public class CubePuzzleManager : MonoBehaviour
 
     [SerializeField] private int[] imageColors = new int[3]; // randomized colors
     [SerializeField] private int[] cubeColors = new int[3];  // cube materials
+    [SerializeField] private AudioSource puzzleUnlockSfx;
 
+    private bool isPuzzleInit;
     void Awake()
     {
         instance = this;
@@ -26,6 +28,8 @@ public class CubePuzzleManager : MonoBehaviour
 
     void CheckForMatch()
     {
+        if (!isPuzzleInit) return;
+
         for (int i = 0; i < 3; i++)
         {
             if (cubeColors[i] != imageColors[i])
@@ -33,5 +37,14 @@ public class CubePuzzleManager : MonoBehaviour
         }
 
         Debug.Log("Unlock!");
+        // Play unlock sfx
+        puzzleUnlockSfx.Play();
+
+        // Idk some lvl next mechanism or door opening here
+    }
+
+    public void StartPuzzleInit()
+    {
+        isPuzzleInit = true;
     }
 }
