@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "13f855d6-b8c1-4d25-9b73-73f19eb6cc26",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -130,6 +139,17 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73f46d4f-62dc-4dad-a208-f3225a20d628",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -177,6 +197,15 @@
                     "name": "Return",
                     "type": "Button",
                     "id": "7c49b714-5374-4080-b097-ee080a3f0a51",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "71b6c2b4-8269-4c7f-a368-c2e4ae657036",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -304,6 +333,17 @@
                     "action": "Return",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0cf8d3e6-72fb-4ee6-8856-447708487eb0",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -324,6 +364,15 @@
                     "name": "Return",
                     "type": "Button",
                     "id": "cdd8a80e-a126-451a-a896-67af0be41872",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "218bbbce-efdc-4df0-b3c2-e7c06a67605e",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -350,6 +399,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Return",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7995c182-a389-4e74-9911-aab1d92d41b7",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

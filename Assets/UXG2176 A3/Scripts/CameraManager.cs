@@ -21,20 +21,10 @@ public class CameraManager : MonoBehaviour
 
     GameInput gameInput;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
-
     private void Start()
     {
+        Instance = this;
+
         gameInput = Player.Instance.GetComponent<GameInput>();
     }
 

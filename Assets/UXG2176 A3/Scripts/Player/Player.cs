@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
     bool hasSpawned = false;
     private int currentCCTVIndex = 0;
 
+    [SerializeField] Canvas pauseCanvas;
+
     [SerializeField] Canvas playerCanvas;
     [SerializeField] Canvas droneCanvas;
     [SerializeField] Canvas keypadCanvas;
@@ -42,18 +44,17 @@ public class Player : MonoBehaviour
     private void Start()
     {
         gameInput = GetComponent<GameInput>();
+        gameInput.OnPauseAction += GameInput_OnPauseAction;
 
+        playerState = PlayerState.TRANSITION;
         spawnDelayTimer = spawnDelayDuration;
+        hasSpawned = false;
+        currentCCTVIndex = 0;
 
         // disable all UI except player
-        if (droneCanvas != null)
-        {
-            droneCanvas.enabled = false;
-        }
-        if (keypadCanvas != null)
-        {
-            keypadCanvas.enabled = false;
-        }
+        if (pauseCanvas != null) pauseCanvas.enabled = false;
+        if (droneCanvas != null) droneCanvas.enabled = false;
+        if (keypadCanvas != null) keypadCanvas.enabled = false;
     }
 
     private void Update()
@@ -132,6 +133,45 @@ public class Player : MonoBehaviour
         if (playerCanvas != null) playerCanvas.enabled = false;
         if (droneCanvas != null) droneCanvas.enabled = false;
         if (keypadCanvas != null) keypadCanvas.enabled = false;
+
+        switch (playerState)
+        {
+            case PlayerState.PLAYER:
+                if (playerCanvas != null) playerCanvas.enabled = true;
+                break;
+
+            case PlayerState.DRONE:
+                if (droneCanvas != null) droneCanvas.enabled = true;
+                break;
+
+            case PlayerState.KEYPAD:
+                if (keypadCanvas != null) keypadCanvas.enabled = true;
+                break;
+
+            case PlayerState.CCTV:
+            default:
+                break;
+        }
+    }
+
+    private void GameInput_OnPauseAction(object sender, System.EventArgs e)
+    {
+        Time.timeScale = 0f;
+        pauseCanvas.enabled = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+
+        if (playerCanvas != null) playerCanvas.enabled = false;
+        if (droneCanvas != null) droneCanvas.enabled = false;
+        if (keypadCanvas != null) keypadCanvas.enabled = false;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        pauseCanvas.enabled = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         switch (playerState)
         {

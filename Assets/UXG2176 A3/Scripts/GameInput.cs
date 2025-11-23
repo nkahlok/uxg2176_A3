@@ -6,6 +6,8 @@ public class GameInput : MonoBehaviour
 {
     InputSystem_Actions inputActions;
 
+    public event EventHandler OnPauseAction;
+
     public event EventHandler OnPlayerInteractAction;
     public event EventHandler OnDroneShootAction;
     public event EventHandler OnDroneReloadAction;
@@ -22,14 +24,17 @@ public class GameInput : MonoBehaviour
         // enable all input action maps and their respective actions
         inputActions.Player.Enable();
         inputActions.Player.Interact.performed += PlayerInteract_performed;
+        inputActions.Player.Pause.performed += Pause_performed;
 
         inputActions.Drone.Enable();
         inputActions.Drone.Attack.performed += DroneAttack_performed;
         inputActions.Drone.Reload.performed += DroneReload_performed;
         inputActions.Drone.Return.performed += DroneReturn_performed;
+        inputActions.Drone.Pause.performed += Pause_performed;
 
         inputActions.Keypad.Enable();
         inputActions.Keypad.Return.performed += UIReturn_performed;
+        inputActions.Keypad.Pause.performed += Pause_performed;
 
         // disable all maps
         Cursor.lockState = CursorLockMode.Locked;
@@ -141,5 +146,10 @@ public class GameInput : MonoBehaviour
     private void UIReturn_performed(InputAction.CallbackContext obj)
     {
         OnKeypadReturnAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Pause_performed(InputAction.CallbackContext obj)
+    {
+        OnPauseAction?.Invoke(this, EventArgs.Empty);
     }
 }
