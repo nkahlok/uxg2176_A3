@@ -25,19 +25,24 @@ public class PlayerMovement : MonoBehaviour
             // get player input
             Vector2 input = gameInput.GetMovementVector();
 
-            // get flattened cam vectors and normalise
-            Vector3 camForward = CameraManager.Instance.GetCameraForward();
-            Vector3 camRight = CameraManager.Instance.GetCameraRight();
-            camForward.y = 0f;
-            camRight.y = 0f;
-            camForward.Normalize();
-            camRight.Normalize();
+            if (input.sqrMagnitude > 0.1f)
+            {
+                // get flattened cam vectors and normalise
+                Vector3 camForward = CameraManager.Instance.GetCameraForward();
+                Vector3 camRight = CameraManager.Instance.GetCameraRight();
+                camForward.y = 0f;
+                camRight.y = 0f;
+                camForward.Normalize();
+                camRight.Normalize();
 
-            Vector3 moveDir = camForward * input.y + camRight * input.x;
-            moveDir.Normalize();
+                Vector3 moveDir = camForward * input.y + camRight * input.x;
+                moveDir.Normalize();
 
-            // update player pos
-            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDir);
+                // update player pos
+                rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDir);
+            }
+
+            rb.linearVelocity = Vector3.zero;
         }
     }
 }
