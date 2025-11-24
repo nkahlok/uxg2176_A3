@@ -7,6 +7,10 @@ public class CCTVPanel : Interactable
     int cctvVirtualCamIndex = 0;
     [SerializeField] TMP_Text camText;
     [SerializeField] ObjectiveText objectiveText;
+    [SerializeField] AudioClip buttonClick1;
+    [SerializeField] AudioClip buttonClick2;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource audioSource2;
 
     private void Start()
     {
@@ -16,6 +20,9 @@ public class CCTVPanel : Interactable
         gameInput.OnCCTVReturnAction += GameInput_OnCCTVReturnAction;
 
         objectiveText.UpdateObjText(ObjectiveText.ObjText.FIXEDCAM_CAMPANEL);
+
+        audioSource2.volume = 0f;
+        audioSource2.Play();
     }
 
     private void GameInput_OnCCTVCycleLeftAction(object sender, System.EventArgs e)
@@ -30,17 +37,21 @@ public class CCTVPanel : Interactable
 
     private void GameInput_OnCCTVReturnAction(object sender, System.EventArgs e)
     {
+        audioSource2.volume = 0f;
         Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
     }
 
     public override void Activate()
     {
         objectiveText.UpdateObjText(ObjectiveText.ObjText.FIXEDCAM_KEYPAD);
+        audioSource.PlayOneShot(buttonClick1);
+        audioSource2.volume = 1f;
         Player.Instance.SwitchMode(Player.PlayerState.CCTV);
     }
 
     private void CycleCCTVCamera(bool cycleRight)
     {
+        audioSource.PlayOneShot(buttonClick2);
         if (cycleRight)
         {
             cctvVirtualCamIndex++;

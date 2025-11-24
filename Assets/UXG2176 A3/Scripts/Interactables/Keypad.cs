@@ -13,6 +13,10 @@ public class Keypad : MonoBehaviour
 
     [SerializeField] GameObject door;
 
+    [SerializeField] AudioClip buttonClick;
+    [SerializeField] AudioClip approve;
+    [SerializeField] AudioSource audioSource;
+
     [Serializable]
     public enum ButtonType
     {
@@ -38,6 +42,8 @@ public class Keypad : MonoBehaviour
 
     public void ButtonClick(KeypadButtons button)
     {
+        audioSource.PlayOneShot(buttonClick);
+
         if (button.buttonType == ButtonType.CLEAR)
         {
             ClearInput();
@@ -120,6 +126,7 @@ public class Keypad : MonoBehaviour
         ClearInput();
         isUnlocked = true;
 
+        audioSource.PlayOneShot(approve);
         objectiveText.UpdateObjText(ObjectiveText.ObjText.NEXTLEVEL);
 
         Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
