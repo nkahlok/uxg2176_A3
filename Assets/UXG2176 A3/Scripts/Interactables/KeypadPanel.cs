@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class KeypadPanel : Interactable
 {
     GameInput gameInput;

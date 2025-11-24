@@ -6,6 +6,7 @@ public class CCTVPanel : Interactable
     GameInput gameInput;
     int cctvVirtualCamIndex = 0;
     [SerializeField] TMP_Text camText;
+    [SerializeField] ObjectiveText objectiveText;
 
     private void Start()
     {
@@ -13,6 +14,8 @@ public class CCTVPanel : Interactable
         gameInput.OnCCTVCycleLeftAction += GameInput_OnCCTVCycleLeftAction;
         gameInput.OnCCTVCycleRightAction += GameInput_OnCCTVCycleRightAction;
         gameInput.OnCCTVReturnAction += GameInput_OnCCTVReturnAction;
+
+        objectiveText.UpdateObjText(ObjectiveText.ObjText.FIXEDCAM_CAMPANEL);
     }
 
     private void GameInput_OnCCTVCycleLeftAction(object sender, System.EventArgs e)
@@ -32,6 +35,7 @@ public class CCTVPanel : Interactable
 
     public override void Activate()
     {
+        objectiveText.UpdateObjText(ObjectiveText.ObjText.FIXEDCAM_KEYPAD);
         Player.Instance.SwitchMode(Player.PlayerState.CCTV);
     }
 

@@ -9,6 +9,7 @@ public class Keypad : MonoBehaviour
     [HideInInspector] public bool isUnlocked = false;
 
     [SerializeField] TMP_Text displayText;
+    [SerializeField] ObjectiveText objectiveText;
 
     [SerializeField] GameObject door;
 
@@ -87,6 +88,10 @@ public class Keypad : MonoBehaviour
                     enteredCode += "0";
                     break;
 
+                case ButtonType.ENTER:
+                    ClearInput();
+                    break;
+
                 default:
                     break;
             }
@@ -95,9 +100,16 @@ public class Keypad : MonoBehaviour
         }
         else if (enteredCode.Length == unlockCode.Length)
         {
-            if (button.buttonType == ButtonType.ENTER && enteredCode == unlockCode)
+            if (button.buttonType == ButtonType.ENTER)
             {
-                UnlockPuzzle();
+                if (enteredCode == unlockCode)
+                {
+                    UnlockPuzzle();
+                }
+                else
+                {
+                    ClearInput();
+                }
             }
         }
     }
@@ -107,6 +119,8 @@ public class Keypad : MonoBehaviour
         door.SetActive(false);
         ClearInput();
         isUnlocked = true;
+
+        objectiveText.UpdateObjText(ObjectiveText.ObjText.NEXTLEVEL);
 
         Player.Instance.SwitchMode(Player.PlayerState.PLAYER);
     }
